@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+#
+# SPDX-License-Identifier: Unlicense
+
+# Exit immediately on each error and unset variable;
+# see: https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
+set -Eeuo pipefail
+#set -Eeu
+
+script_dir=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
+# shellcheck source=./_common
+source "$script_dir/_common"
+
+browse_url="http://localhost:3030/dataset.html?tab=query&ds=/name"
+
+ensure_tool "$JENA_FUSEKI_HOME" "$JENA_FUSEKI_DL_URL" "Apache Jena Fuseki"
+
+echo
+echo "Starting Apache Jena Fuseki on '$db_dir' ..."
+echo
+echo "Once it is started, you are ready to run SPARQL querries"
+echo "in your browser under: $browse_url"
+echo
+"$jena_fuseki_server" \
+	--update \
+	--localhost \
+	--tdb2 \
+	--loc "$db_dir" \
+	/name
+

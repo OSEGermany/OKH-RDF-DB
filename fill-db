@@ -1,0 +1,110 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+#
+# SPDX-License-Identifier: Unlicense
+
+# Exit immediately on each error and unset variable;
+# see: https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
+set -Eeuo pipefail
+#set -Eeu
+
+script_dir=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
+# shellcheck source=./_common
+source "$script_dir/_common"
+
+CLONE_URL_LOSH_ONTOLOGY="https://github.com/OPEN-NEXT/OKH-LOSH.git"
+CLONE_URL_LOSH_DATA="https://gitlab.opensourceecology.de/verein/projekte/losh-rdf.git"
+cleanup=false
+
+function repo_ensure_latest() {
+	dir="$1"
+	clone_url="$2"
+	main_branch="${3:-master}"
+	if [ -d "$dir" ]
+	then
+		git -C "$dir" fetch
+		git -C "$dir" rebase "origin/$main_branch"
+	else
+		git clone "$clone_url" "$dir"
+	fi
+}
+
+ensure_tool "$JENA_HOME" "$JENA_DL_URL" "Apache Jena"
+
+echo
+echo "Get/Update input RDF ..."
+mkdir -p "data"
+ont_dir_name="$(basename --suffix ".git" "$CLONE_URL_LOSH_ONTOLOGY")"
+ont_dir="data/$ont_dir_name"
+repo_ensure_latest "$ont_dir" "$CLONE_URL_LOSH_ONTOLOGY"
+ontology_ttls_root="$ont_dir"
+data_dir_name="$(basename --suffix ".git" "$CLONE_URL_LOSH_DATA")"
+data_dir="data/$data_dir_name"
+repo_ensure_latest "$data_dir" "$CLONE_URL_LOSH_DATA" "main"
+data_ttls_root="$data_dir/RDF"
+
+if $cleanup
+then
+	echo
+	echo "Cleaning up file-names ..."
+	find \
+		"$data_ttls_root" \
+		| while read -r file
+	do
+		new_file="$(echo "$file" | sed -e 's/[[:space:]]/_/g')"
+
+		if [ "$new_file" != "$file" ]
+		then
+			if [ -e "$new_file" ]
+			then
+				#>&2 echo "Wanted to rename '$file' to '$new_file', but the target file already exists!"
+				#exit 2
+				:
+			else
+				echo "Renaming '$file' to '$new_file'"
+				mv "$file" "$new_file"
+			fi
+		fi
+
+		#clean_file_name "$file"
+	done
+
+	echo
+	echo "Fixing the data from the Krawler ..."
+	find \
+		"$data_ttls_root" \
+		-name "*.ttl" \
+		| while read -r ttl_file
+	do
+		echo "    '$ttl_file' ..."
+		sed -i \
+			-e 's|^@base\(.*\)#> .$|@base\1> .\n@prefix :         <#> .|' \
+			"$ttl_file"
+	done
+fi
+
+echo
+echo "Setting up the DB in '$db_dir' ..."
+
+mkdir -p "$db_dir"
+find \
+	"$ontology_ttls_root" \
+	"$data_ttls_root" \
+	-name "*.ttl" \
+	-print0 \
+	| xargs -0 "$jena_db_data_injector" \
+	--loc "$db_dir" \
+	--syntax turtle
+echo "done. (Setting up the DB)"
+
+echo
+echo "Ready to run SPARQL querries!"
+echo
+echo "for example:"
+echo "$jena_db_data_querier \\"
+echo "    --loc \"$db_dir\" \\"
+echo "    --query \"sample-query.txt\""
+echo
+echo "Or start the Web interface for running SPARQL queries with:"
+echo "./web-ui"
