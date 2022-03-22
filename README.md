@@ -38,5 +38,5 @@ In short, it:
 ./web-ui
 ```
 
-[sample-query.txt](sample-query.txt) is a file containing a sample query.
+[sample-query.txt](sample-query.txt) contains a sample query.
 
