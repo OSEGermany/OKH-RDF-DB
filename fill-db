@@ -49,7 +49,7 @@ then
 	echo
 	echo "Cleaning up file-names ..."
 	find \
-		"$data_ttls_root" \
+		"$data_ttls_root" -type f -name "*.ttl" \
 		| while read -r file
 	do
 		new_file="$(echo "$file" | sed -e 's/[[:space:]]/_/g')"
@@ -73,7 +73,7 @@ then
 	echo
 	echo "Fixing the data from the Krawler ..."
 	find \
-		"$data_ttls_root" \
+		"$data_ttls_root" -type f -name "*.ttl" \
 		-name "*.ttl" \
 		| while read -r ttl_file
 	do
