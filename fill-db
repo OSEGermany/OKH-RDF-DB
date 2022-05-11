@@ -20,6 +20,7 @@ APP_NAME="RDF DB Filler"
 CLONE_URL_LOSH_ONTOLOGY="https://github.com/OPEN-NEXT/OKH-LOSH.git"
 CLONE_URL_LOSH_DATA="https://gitlab.opensourceecology.de/verein/projekte/losh-rdf.git"
 cleanup=false
+online=true
 
 function print_help() {
 
@@ -30,6 +31,7 @@ function print_help() {
 	echo "  $script_name [OPTION...]"
 	echo "Options:"
 	echo "  -h, --help          Print this usage help and exit"
+	echo "  --offline           Do not try to fetch git repos"
 	echo "Examples:"
 	echo "  $script_name"
 }
@@ -46,6 +48,9 @@ do
 			print_help
 			exit 0
 			;;
+		-o|--offline)
+			online=false
+			;;
 		*) # non-/unknown option
 			POSITIONAL+=("$arg") # save it in an array for later
 			;;
@@ -60,9 +65,17 @@ function repo_ensure_latest() {
 	main_branch="${3:-master}"
 	if [ -d "$dir" ]
 	then
-		git -C "$dir" fetch
-		git -C "$dir" rebase "origin/$main_branch"
+		if $online
+		then
+			git -C "$dir" fetch
+			git -C "$dir" rebase "origin/$main_branch"
+		fi
 	else
+		if $online
+		then
+			>&2 echo "ERROR: --offline chosen and repo '$dir' not present!"
+			exit 1
+		fi
 		git clone "$clone_url" "$dir"
 	fi
 }
