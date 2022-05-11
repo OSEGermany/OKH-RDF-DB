@@ -97,27 +97,18 @@ data_ttls_root="$data_dir/RDF"
 if $cleanup
 then
 	echo
-	echo "Cleaning up file-names ..."
+	echo "Checking file-names ..."
 	find \
 		"$data_ttls_root" -type f -name "*.ttl" \
 		| while read -r file
 	do
-		new_file="$(echo "$file" | sed -e 's/[[:space:]]/_/g')"
+		no_spaces_file="$(echo "$file" | sed -e 's/[[:space:]]/_/g')"
 
-		if [ "$new_file" != "$file" ]
+		if [ "$no_spaces_file" != "$file" ]
 		then
-			if [ -e "$new_file" ]
-			then
-				#>&2 echo "Wanted to rename '$file' to '$new_file', but the target file already exists!"
-				#exit 2
-				:
-			else
-				echo "Renaming '$file' to '$new_file'"
-				mv "$file" "$new_file"
-			fi
+			>&2 echo "ERROR: File-name with spaces detected, please rename: '$file'"
+			exit 2
 		fi
-
-		#clean_file_name "$file"
 	done
 
 	echo
