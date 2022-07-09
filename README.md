@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+SPDX-FileCopyrightText: 2021-2022 Robin Vobruba <hoijui.quaero@gmail.com>
 
 SPDX-License-Identifier: CC0-1.0
 -->
@@ -14,15 +14,18 @@ SPDX-License-Identifier: CC0-1.0
 # LOSH RDF tripple-store tester
 
 This contains instructions and scripts
-to help you easily test the LOSH-OKH data
+to help you easily test the [LOSH-OKH data](
+https://gitlab.opensourceecology.de/verein/projekte/losh-rdf)
 with the [Apache Jena](https://jena.apache.org/) triple-store.
 
 In short, it:
 
 1. Downloads the required software (to `~/.local/opt/apache-jena-*`)
-2. Creates a directory to use as the Database/tripple-store/backend
-3. Loads the LOSH OKH ontology and all the crawled modules into the database
-4. Starts a local Web-interface for you to run SPARQL queries on the data.
+2. Creates a directory (`./rdf_db/`) to use as the tripple-store (backend)
+3. Loads the LOSH OKH ontology and all the crawled modules
+  into the tripple-store
+4. Starts a local web-interface (frontend)
+  for you to run SPARQL queries on the data
 
 ## Usage
 
