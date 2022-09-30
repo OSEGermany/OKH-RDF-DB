@@ -71,7 +71,7 @@ function repo_ensure_latest() {
 			git -C "$dir" rebase "origin/$main_branch"
 		fi
 	else
-		if $online
+		if ! $online
 		then
 			>&2 echo "ERROR: --offline chosen and repo '$dir' not present!"
 			exit 1
