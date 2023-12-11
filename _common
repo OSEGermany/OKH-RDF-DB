@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# SPDX-FileCopyrightText: 2021-2022 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2021 - 2023 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: Unlicense
 
@@ -10,6 +10,11 @@ set -Eeuo pipefail
 #set -Eeu
 
 script_dir=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
+
+# See: https://stackoverflow.com/a/7335120/586229
+JAVA_VER=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}' | awk -F '.' '{print $1$2}')
+# Apache Jena 4.10, December 2023, requires at least Java 11
+JAVA_VER_MIN=110
 
 JENA_VERSION="4.6.1"
 JENA_DL_BASE_URL="https://archive.apache.org/dist/jena/binaries/"
@@ -26,6 +31,21 @@ db_dir="$script_dir/rdf_db"
 jena_db_data_injector="$JENA_HOME/bin/tdb2.tdbloader"
 jena_db_data_querier="$JENA_HOME/bin/tdb2.tdbquery"
 jena_fuseki_server="$JENA_FUSEKI_HOME/fuseki-server"
+
+function ensure_java_version() {
+	# Java 1.5 -> 15
+	# Java 1.8 -> 18
+	# Java 11 -> 110
+	required_version_10="${1:-$JAVA_VER_MIN}"
+
+	if [ "$JAVA_VER" -ge "$required_version_10" ]
+	then
+		echo "INFO Java version is sufficiently new!"
+	else
+		>&2 echo "ERROR Java version ($JAVA_VER) is too old, needs to be at least $required_version_10!"
+		exit 1
+	fi
+}
 
 function ensure_tool() {
 	home="$1"

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2021 - 2023 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: Unlicense
 
@@ -15,6 +15,7 @@ source "$script_dir/_common"
 
 browse_url="http://localhost:3030/dataset.html?tab=query&ds=/name"
 
+ensure_java_version
 ensure_tool "$JENA_FUSEKI_HOME" "$JENA_FUSEKI_DL_URL" "Apache Jena Fuseki"
 
 echo

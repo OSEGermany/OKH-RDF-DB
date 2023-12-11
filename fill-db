@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# SPDX-FileCopyrightText: 2021-2022 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2021 - 2023 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: Unlicense
 
@@ -80,6 +80,7 @@ function repo_ensure_latest() {
 	fi
 }
 
+ensure_java_version
 ensure_tool "$JENA_HOME" "$JENA_DL_URL" "Apache Jena"
 
 echo
