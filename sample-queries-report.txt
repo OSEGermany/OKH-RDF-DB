@@ -1,0 +1,219 @@
+# SPDX-FileCopyrightText: 2021 - 2023 Robin Vobruba <hoijui.quaero@gmail.com>
+#
+# SPDX-License-Identifier: Unlicense
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+#PREFIX bd: <http://www.bigdata.com/rdf#>
+#PREFIX osh: <http://mediawiki.library-of-open-source-hardware.svc:8080/entity/>
+PREFIX okh: <https://github.com/OPEN-NEXT/OKH-LOSH/raw/master/OKH-LOSH.ttl#>
+PREFIX otrl: <http://purl.org/oseg/ontologies/OTRL#>
+PREFIX wf: <https://wikifactory.com/>
+PREFIX ap: <https://www.appropedia.org/>
+PREFIX wfs: <https://wikifactory.com/@shirako/>
+PREFIX loshdummymosha: <https://github.com/OPEN-NEXT/LOSH-dummy-MOSH-A/1.0.0#>
+PREFIX ohloom: <https://gitlab.com/OSEGermany/ohloom/1.0.0#>
+
+# all tripples
+SELECT ?subject ?predicate ?object
+WHERE {
+  ?subject ?predicate ?object
+}
+
+# all Modules (approximately equal to: all projects, becasue we do not have sub-modules yet, in practice)
+SELECT ?subject ?predicate ?object
+WHERE {
+  ?subject rdf:type okh:Module
+}
+
+# licenseDistInd
+SELECT
+    ?license
+    (count(?x) as ?count)
+    {
+        ?x okh:spdxLicense ?licenseUri .
+        { ?x okh:repoHost '%s'. }
+        BIND(REPLACE(STR(?licenseUri), 'https://spdx.org/licenses/', '')
+            AS ?license)
+    }
+GROUP BY
+    ?license
+
+querys['licenseDistIndNew'] = \"\\
+SELECT
+    ?license
+    (count(?x) as ?count)
+    {
+        ?x okh:spdxLicense ?licenseUri .
+        BIND(REPLACE(STR(?licenseUri), 'https://spdx.org/licenses/', '')
+            AS ?license)
+    }
+GROUP BY
+    ?license
+ORDER BY
+    DESC(?count)
+
+# repoHosts
+SELECT
+    (
+        REPLACE(
+            REPLACE(
+                REPLACE(
+                    STR(?repoHostFull),
+                    '^(www|certification|source|en)[.]',
+                    ''),
+                '[.](com|org|wiki)$',
+                ''),
+            '^field-ready-projects.openknowhow$',
+            'field-ready')
+        AS ?repoHost
+    )
+    ?count
+    (round((?count / ?count_all) * 100) AS ?percent)
+WHERE
+    {
+        {
+            SELECT ?repoHostFull (count(?px) AS ?count)
+            WHERE
+                {
+                    ?px okh:repoHost ?repoHostFull
+                }
+            GROUP BY ?repoHostFull
+        }
+        {
+            SELECT (count(?x) AS ?count_all)
+            WHERE
+                {
+                    ?x okh:repoHost ?repoHostFull
+                }
+        }
+    }
+GROUP BY
+    ?count
+    ?count_all
+    ?repoHostFull
+
+# licensesReciprocality
+SELECT
+    (count(?x) as ?count)
+    ?reType
+WHERE
+    {
+        ?x okh:spdxLicense ?license ;
+        okh:spdxLicense ?id .
+        values (?id ?reType)
+        {
+            (<https://spdx.org/licenses/Apache-1.0> \\\"non\\\")
+            (<https://spdx.org/licenses/Apache-1.1> \\\"non\\\")
+            (<https://spdx.org/licenses/Apache-2.0> \\\"non\\\")
+            (<https://spdx.org/licenses/BSD-1-Clause> \\\"non\\\")
+            (<https://spdx.org/licenses/BSD-2-Clause> \\\"non\\\")
+            (<https://spdx.org/licenses/BSD-2-Clause-Paten> \\\"non\\\")
+            (<https://spdx.org/licenses/BSD-3-Clause> \\\"non\\\")
+            (<https://spdx.org/licenses/BSD-3-Clause-Clear> \\\"non\\\")
+            (<https://spdx.org/licenses/BSD-3-Clause-LBNL> \\\"non\\\")
+            (<https://spdx.org/licenses/BSD-4-Clause> \\\"non\\\")
+            (<https://spdx.org/licenses/MIT> \\\"non\\\")
+            (<https://spdx.org/licenses/MIT-0> \\\"non\\\")
+            (<https://spdx.org/licenses/CC-BY-1.0> \\\"non\\\")
+            (<https://spdx.org/licenses/CC-BY-2.0> \\\"non\\\")
+            (<https://spdx.org/licenses/CC-BY-2.5> \\\"non\\\")
+            (<https://spdx.org/licenses/CC-BY-2.5-AU> \\\"non\\\")
+            (<https://spdx.org/licenses/CC-BY-3.0-AT> \\\"non\\\")
+            (<https://spdx.org/licenses/CC-BY-3.0-DE> \\\"non\\\")
+            (<https://spdx.org/licenses/CC-BY-3.0-NL> \\\"non\\\")
+            (<https://spdx.org/licenses/CC-BY-3.0-US> \\\"non\\\")
+            (<https://spdx.org/licenses/CC-BY-3.0> \\\"non\\\")
+            (<https://spdx.org/licenses/CC-BY-4.0> \\\"non\\\")
+            (<https://spdx.org/licenses/CC-BY-SA-1.0> \\\"strong\\\")
+            (<https://spdx.org/licenses/CC-BY-SA-2.0> \\\"strong\\\")
+            (<https://spdx.org/licenses/CC-BY-SA-2.0-UK> \\\"strong\\\")
+            (<https://spdx.org/licenses/CC-BY-SA-2.1-JP> \\\"strong\\\")
+            (<https://spdx.org/licenses/CC-BY-SA-2.5> \\\"strong\\\")
+            (<https://spdx.org/licenses/CC-BY-SA-3.0> \\\"strong\\\")
+            (<https://spdx.org/licenses/CC-BY-SA-3.0-AT> \\\"strong\\\")
+            (<https://spdx.org/licenses/CC-BY-SA-3.0-DE> \\\"strong\\\")
+            (<https://spdx.org/licenses/CC-BY-SA-4.0> \\\"strong\\\")
+            (<https://spdx.org/licenses/CC0-1.0> \\\"non\\\")
+            (<https://spdx.org/licenses/CERN-OHL-1.1> \\\"strong\\\")
+            (<https://spdx.org/licenses/CERN-OHL-1.2> \\\"strong\\\")
+            (<https://spdx.org/licenses/CERN-OHL-P-2.0> \\\"non\\\")
+            (<https://spdx.org/licenses/CERN-OHL-S-2.0> \\\"strong\\\")
+            (<https://spdx.org/licenses/CERN-OHL-W-2.0> \\\"weak\\\")
+            (<https://spdx.org/licenses/GPL-1.0-only> \\\"strong\\\")
+            (<https://spdx.org/licenses/GPL-1.0-or-later> \\\"strong\\\")
+            (<https://spdx.org/licenses/GPL-2.0-only> \\\"strong\\\")
+            (<https://spdx.org/licenses/GPL-2.0-or-later> \\\"strong\\\")
+            (<https://spdx.org/licenses/GPL-3.0> \\\"strong\\\")
+            (<https://spdx.org/licenses/GPL-3.0-or-later> \\\"strong\\\")
+            (<https://spdx.org/licenses/SHL-0.5> \\\"non\\\")
+            (<https://spdx.org/licenses/SHL-0.51> \\\"non\\\")
+            (<https://spdx.org/licenses/SHL-2.0> \\\"non\\\")
+            (<https://spdx.org/licenses/SHL-2.1> \\\"non\\\")
+            (<https://spdx.org/licenses/TAPR-OHL-1.0> \\\"strong\\\")
+            (<https://spdx.org/licenses/N/A> \\\"N/A\\\")
+        }
+    }
+GROUP BY
+    ?reType
+
+# projectInputMethod
+SELECT
+    ?uploadMethod
+    (count(?x) AS ?count)
+WHERE
+    { ?x okh:uploadMethod ?uploadMethod }
+GROUP BY
+    ?uploadMethod
+
+# otrl
+SELECT
+    (REPLACE(STR(?otrlUri), '^http://purl.org/oseg/ontologies/OTRL#', '')
+        AS ?otrl)
+    (count(?x) AS ?count)
+WHERE
+    { ?x okh:technologyReadinessLevel ?otrlUri }
+GROUP BY
+    ?otrlUri
+
+# odrl
+SELECT
+    (REPLACE(STR(?odrlUri), '^http://purl.org/oseg/ontologies/OTRL#', '')
+        AS ?odrl)
+    (count(?x) AS ?count)
+WHERE
+    { ?x okh:documentationReadinessLevel ?odrlUri }
+GROUP BY
+    ?odrlUri
+
+# cpc
+SELECT
+    (
+        REPLACE(
+            STR(?cpc_full),
+            '^(.).+',
+            '$1')
+        AS ?cpc_main
+    )
+    (
+        REPLACE(
+            STR(?cpc_full),
+            '^.(.{0,2}).*',
+            '$1')
+        AS ?cpc_sub
+    )
+    (count(?x) AS ?count)
+    (round((?count / ?count_all) * 100) AS ?percent)
+WHERE
+    { ?x okh:cpcPatentClass ?cpc_full }
+GROUP BY
+    ?cpc_main
+    ?cpc_short
+    ?cpc_full
+    ?count_all
+
+# countAll
+SELECT
+    (count(?x) AS ?count)
+    { ?x rdf:type okh:Module }
+
