@@ -12,7 +12,7 @@ set -Eeuo pipefail
 script_dir=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
 
 # See: https://stackoverflow.com/a/7335120/586229
-JAVA_VER=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}' | awk -F '.' '{print $1$2}')
+JAVA_VER=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}' | awk -F '.' '{sub("^$", "0", $2); print $1$2}')
 # Apache Jena 4.10, December 2023, requires at least Java 11
 JAVA_VER_MIN=110
 
