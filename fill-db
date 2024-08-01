@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# SPDX-FileCopyrightText: 2021 - 2023 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2021 - 2024 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: Unlicense
 
@@ -17,7 +17,7 @@ source "$script_dir/_common"
 
 # initial default values
 APP_NAME="RDF DB Filler"
-CLONE_URL_LOSH_ONTOLOGY="https://github.com/OPEN-NEXT/OKH-LOSH.git"
+CLONE_URL_LOSH_ONTOLOGY="https://github.com/iop-alliance/OpenKnowHow.git"
 CLONE_URL_LOSH_DATA="https://gitlab.opensourceecology.de/verein/projekte/losh-rdf.git"
 cleanup=false
 online=true
@@ -89,7 +89,7 @@ mkdir -p "data"
 ont_dir_name="$(basename --suffix ".git" "$CLONE_URL_LOSH_ONTOLOGY")"
 ont_dir="data/$ont_dir_name"
 repo_ensure_latest "$ont_dir" "$CLONE_URL_LOSH_ONTOLOGY"
-ontology_ttls_root="$ont_dir"
+ontology_ttls_root="$ont_dir/src/spec"
 data_dir_name="$(basename --suffix ".git" "$CLONE_URL_LOSH_DATA")"
 data_dir="data/$data_dir_name"
 repo_ensure_latest "$data_dir" "$CLONE_URL_LOSH_DATA" "main"
