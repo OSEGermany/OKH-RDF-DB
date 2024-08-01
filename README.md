@@ -14,8 +14,8 @@ SPDX-License-Identifier: CC0-1.0
     https://api.reuse.software/info/github.com/OPEN-NEXT/LOSH-RDF-DB-tester)
 
 This contains instructions and scripts
-to help you easily test the [OKH data](
-https://gitlab.opensourceecology.de/verein/projekte/losh-rdf)
+to help you easily test the [OKH](https://github.com/iop-alliance/OpenKnowHow)
+[data](https://gitlab.opensourceecology.de/verein/projekte/losh-rdf)
 with the [Apache Jena](https://jena.apache.org/) triple-store.
 
 In short, it:
