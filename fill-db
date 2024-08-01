@@ -67,7 +67,7 @@ function repo_ensure_latest() {
 	then
 		if $online
 		then
-			git -C "$dir" fetch
+			git -C "$dir" fetch origin "$main_branch"
 			git -C "$dir" rebase "origin/$main_branch"
 		fi
 	else
@@ -76,7 +76,7 @@ function repo_ensure_latest() {
 			>&2 echo "ERROR: --offline chosen and repo '$dir' not present!"
 			exit 1
 		fi
-		git clone "$clone_url" "$dir"
+		git clone "$clone_url" --single-branch "$dir"
 	fi
 }
 
