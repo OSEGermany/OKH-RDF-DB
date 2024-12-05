@@ -20,11 +20,11 @@ with the [Apache Jena](https://jena.apache.org/) triple-store.
 
 In short, it:
 
-1. Downloads the required software (to `~/.local/opt/apache-jena-*`)
-2. (backend) Creates a directory (`./rdf_db/`) to use as the tripple-store
-3. Loads the OKH ontology and all the crawled hardware projects
-    into the tripple-store
-4. (frontend) Starts a local web-interface
+1. (backend & frontend) Downloads the required software (to `~/.local/opt/apache-jena-*`)
+2. (backend) Creates a directory (`./rdf_db/`) to use as the triple-store
+3. (backend) Loads the OKH ontology and all the crawled hardware projects
+    into the triple-store
+4. (frontend, _optional_) Starts a local web-interface
     that allows you to run SPARQL queries on the data
 
 ## Usage
