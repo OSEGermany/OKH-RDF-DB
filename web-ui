@@ -22,7 +22,7 @@ ensure_tool "$JENA_FUSEKI_HOME" "$JENA_FUSEKI_DL_URL" "Apache Jena Fuseki"
 echo
 echo "Starting Apache Jena Fuseki on '$db_dir' ..."
 echo
-echo "Once it is started, you are ready to run SPARQL querries"
+echo "Once it is started, you are ready to run SPARQL queries"
 echo "in your browser under: $browse_url"
 echo
 "$jena_fuseki_server" \

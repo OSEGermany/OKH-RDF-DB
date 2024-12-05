@@ -1,10 +1,10 @@
 <!--
-SPDX-FileCopyrightText: 2021 - 2024 Robin Vobruba <hoijui.quaero@gmail.com>
+SPDX-FileCopyrightText: 2021-2024 Robin Vobruba <hoijui.quaero@gmail.com>
 
 SPDX-License-Identifier: CC0-1.0
 -->
 
-# OKH RDF tripple-store tester
+# OKH RDF triple-store tester
 
 [![License](
     https://img.shields.io/github/license/OPEN-NEXT/LOSH-RDF-DB-tester.svg?style=flat)](
@@ -36,7 +36,7 @@ cd "OKH-DB-tester"
 
 # Creates the DB and fills it with the data
 # (See the output for instructions
-# of how to run SPARQL querries on the command-line).
+# of how to run SPARQL queries on the command-line).
 # NOTE This might take quite a while to finish
 ./fill-db
 

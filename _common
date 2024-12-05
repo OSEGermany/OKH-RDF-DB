@@ -23,7 +23,7 @@ JENA_FUSEKI_DL_URL="$JENA_DL_BASE_URL/apache-jena-fuseki-$JENA_VERSION.zip"
 
 # For the DB
 JENA_HOME="$HOME/.local/opt/apache-jena-$JENA_VERSION"
-# For the (SPQRQL) query web interface ot the DB
+# For the (SPQRQL) query web interface to the DB
 JENA_FUSEKI_HOME="$HOME/.local/opt/apache-jena-fuseki-$JENA_VERSION"
 
 # This dir is where our RDF data will be stored (in a query-efficient way)

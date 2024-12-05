@@ -141,7 +141,7 @@ find \
 echo "done. (Setting up the DB)"
 
 echo
-echo "Ready to run SPARQL querries!"
+echo "Ready to run SPARQL queries!"
 echo
 echo "for example:"
 echo "$jena_db_data_querier \\"

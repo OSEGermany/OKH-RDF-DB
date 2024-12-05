@@ -5,7 +5,7 @@
 # Data - RDF/Turtle files
 /data/
 
-# Apache Jena RDF Trupplestore dir
+# Apache Jena RDF triple-store dir
 /rdf_db/
 
 # Apache Jena Fuseki runtime config and cache
