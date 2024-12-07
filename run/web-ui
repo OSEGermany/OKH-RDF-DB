@@ -73,7 +73,6 @@ echo
 cd "$build_dir"
 "$jena_fuseki_server" \
 	--update \
-	--localhost \
 	--tdb2 \
 	--loc "$db_dir" \
 	--port "$port" \
