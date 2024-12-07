@@ -60,6 +60,7 @@ done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
 browse_url="http://localhost:$port/#/dataset/$dataset_name/query"
+query_url="http://localhost:$port/$dataset_name/query"
 
 ensure_java_version
 ensure_tool "$JENA_FUSEKI_HOME" "$JENA_FUSEKI_DL_URL" "Apache Jena Fuseki"
@@ -69,6 +70,7 @@ echo "Starting Apache Jena Fuseki on '$db_dir' ..."
 echo
 echo "Once it is started, you are ready to run SPARQL queries"
 echo "in your browser under: $browse_url"
+echo "Or query it with SPARQL on: $query_url"
 echo
 cd "$build_dir"
 "$jena_fuseki_server" \
