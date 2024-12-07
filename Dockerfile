@@ -17,6 +17,7 @@ RUN install_packages \
 
 COPY res ./res
 COPY run ./run
+RUN run/install
 RUN run/fill-db
 
 # NOTE Labels and annotations are added by CI (outside this Dockerfile);
