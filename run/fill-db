@@ -11,20 +11,21 @@
 set -Eeuo pipefail
 #set -Eeu
 
-script_dir=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
+script_path="$(readlink -f "${BASH_SOURCE[0]}")"
+script_dir="$(dirname "$script_path")"
 # shellcheck source=./_common
 source "$script_dir/_common"
+script_name="$(basename "$(readlink -f "${BASH_SOURCE[0]}")")"
 
 # initial default values
 APP_NAME="RDF DB Filler"
-CLONE_URL_LOSH_ONTOLOGY="https://github.com/iop-alliance/OpenKnowHow.git"
+CLONE_URL_OKH_ONTOLOGY="https://github.com/iop-alliance/OpenKnowHow.git"
 CLONE_URL_LOSH_DATA="https://gitlab.opensourceecology.de/verein/projekte/losh-rdf.git"
 cleanup=false
 online=true
 
 function print_help() {
 
-	script_name="$(basename "$0")"
 	echo "$APP_NAME - Fills an Apache Jena RDF DB with data from RDF/Turtle files."
 	echo
 	echo "Usage:"
@@ -58,7 +59,6 @@ do
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
-
 function repo_ensure_latest() {
 	dir="$1"
 	clone_url="$2"
@@ -83,17 +83,21 @@ function repo_ensure_latest() {
 ensure_java_version
 ensure_tool "$JENA_HOME" "$JENA_DL_URL" "Apache Jena"
 
+mkdir -p "$build_dir"
+mkdir -p "$data_dir"
+
 echo
 echo "Get/Update input RDF ..."
-mkdir -p "data"
-ont_dir_name="$(basename --suffix ".git" "$CLONE_URL_LOSH_ONTOLOGY")"
-ont_dir="data/$ont_dir_name"
-repo_ensure_latest "$ont_dir" "$CLONE_URL_LOSH_ONTOLOGY"
+
+ont_dir_name="$(basename --suffix ".git" "$CLONE_URL_OKH_ONTOLOGY")"
+ont_dir="$data_dir/$ont_dir_name"
+repo_ensure_latest "$ont_dir" "$CLONE_URL_OKH_ONTOLOGY"
 ontology_ttls_root="$ont_dir/src/spec"
+
 data_dir_name="$(basename --suffix ".git" "$CLONE_URL_LOSH_DATA")"
-data_dir="data/$data_dir_name"
-repo_ensure_latest "$data_dir" "$CLONE_URL_LOSH_DATA" "main"
-data_ttls_root="$data_dir/RDF"
+projs_data_dir="$data_dir/$data_dir_name"
+repo_ensure_latest "$projs_data_dir" "$CLONE_URL_LOSH_DATA" "main"
+data_ttls_root="$projs_data_dir/RDF"
 
 if $cleanup
 then
@@ -103,7 +107,7 @@ then
 		"$data_ttls_root" -type f -name "*.ttl" \
 		| while read -r file
 	do
-		no_spaces_file="$(echo "$file" | sed -e 's/[[:space:]]/_/g')"
+		no_spaces_file="${file// /_}"
 
 		if [ "$no_spaces_file" != "$file" ]
 		then
@@ -146,7 +150,7 @@ echo
 echo "for example:"
 echo "$jena_db_data_querier \\"
 echo "    --loc \"$db_dir\" \\"
-echo "    --query \"sample-query.txt\""
+echo "    --query \"$res_dir/sample-query.txt\""
 echo
 echo "Or start the Web interface for running SPARQL queries with:"
 echo "./web-ui"

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# SPDX-FileCopyrightText: 2021 - 2023 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2021 - 2024 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: Unlicense
 
@@ -9,7 +9,14 @@
 set -Eeuo pipefail
 #set -Eeu
 
-script_dir=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
+script_path="$(readlink -f "${BASH_SOURCE[0]}")"
+script_dir="$(dirname "$script_path")"
+
+proj_root_dir="$(cd "$script_dir"/..; pwd)"
+build_dir="$proj_root_dir/build"
+data_dir="$build_dir/data"
+db_dir="$build_dir/rdf_db"
+res_dir="$proj_root_dir/res"
 
 # See: https://stackoverflow.com/a/7335120/586229
 JAVA_VER=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}' | awk -F '.' '{sub("^$", "0", $2); print $1$2}')
@@ -23,11 +30,10 @@ JENA_FUSEKI_DL_URL="$JENA_DL_BASE_URL/apache-jena-fuseki-$JENA_VERSION.zip"
 
 # For the DB
 JENA_HOME="$HOME/.local/opt/apache-jena-$JENA_VERSION"
-# For the (SPQRQL) query web interface to the DB
+# For the (SPARQL) query web interface to the DB
 JENA_FUSEKI_HOME="$HOME/.local/opt/apache-jena-fuseki-$JENA_VERSION"
 
 # This dir is where our RDF data will be stored (in a query-efficient way)
-db_dir="$script_dir/rdf_db"
 jena_db_data_injector="$JENA_HOME/bin/tdb2.tdbloader"
 jena_db_data_querier="$JENA_HOME/bin/tdb2.tdbquery"
 jena_fuseki_server="$JENA_FUSEKI_HOME/fuseki-server"

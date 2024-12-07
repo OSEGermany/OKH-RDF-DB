@@ -1,12 +1,14 @@
-# SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2021-2024 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: Unlicense
 
+/build/
+
 # Data - RDF/Turtle files
-/data/
+#/build/data/
 
 # Apache Jena RDF triple-store dir
-/rdf_db/
+#/build/rdf_db/
 
 # Apache Jena Fuseki runtime config and cache
-/run/
+#/build/run/
