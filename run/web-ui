@@ -14,8 +14,52 @@ script_dir="$(dirname "$script_path")"
 # shellcheck source=./_common
 source "$script_dir/_common"
 
+# initial default values
+APP_NAME="RDF DB Web UI"
 dataset_name="okh"
-browse_url="http://localhost:3030/#/dataset/$dataset_name/query"
+port="3030"
+
+function print_help() {
+
+	echo "$APP_NAME - Runs a web interface for running SPARQL queries on an Apache Jena RDF DB."
+	echo
+	echo "Usage:"
+	echo "  $script_name [OPTION...]"
+	echo "Options:"
+	echo "  -h, --help"
+	echo "    Print this usage help and exit"
+	echo "  -p, --port PORT"
+	echo "    Run the web service on a different port (default: $port)"
+	echo "Examples:"
+	echo "  $script_name"
+	echo "  $script_name --help"
+	echo "  $script_name --port 80"
+}
+
+# read command-line args
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+	arg="$1"
+	shift # $2 -> $1, $3 -> $2, ...
+
+	case "$arg" in
+		-h|--help)
+			print_help
+			exit 0
+			;;
+		-p|--port)
+			port="$1"
+			shift
+			;;
+		*) # non-/unknown option
+			POSITIONAL+=("$arg") # save it in an array for later
+			;;
+	esac
+done
+set -- "${POSITIONAL[@]}" # restore positional parameters
+
+browse_url="http://localhost:$port/#/dataset/$dataset_name/query"
 
 ensure_java_version
 ensure_tool "$JENA_FUSEKI_HOME" "$JENA_FUSEKI_DL_URL" "Apache Jena Fuseki"
@@ -32,4 +76,5 @@ cd "$build_dir"
 	--localhost \
 	--tdb2 \
 	--loc "$db_dir" \
+	--port "$port" \
 	"/$dataset_name"
