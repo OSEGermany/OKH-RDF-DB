@@ -21,7 +21,7 @@ with the [Apache Jena](https://jena.apache.org/) triple-store.
 In short, it:
 
 1. (backend & frontend) Downloads the required software (to `~/.local/opt/apache-jena-*`)
-2. (backend) Creates a directory (`./rdf_db/`) to use as the triple-store
+2. (backend) Creates a directory (`./build/rdf_db/`) to use as the triple-store
 3. (backend) Loads the OKH ontology and all the crawled hardware projects
     into the triple-store
 4. (frontend, _optional_) Starts a local web-interface
@@ -38,17 +38,17 @@ cd "OKH-DB-tester"
 # (See the output for instructions
 # of how to run SPARQL queries on the command-line).
 # NOTE This might take quite a while to finish
-./fill-db
+run/fill-db
 
 # Starts the web-interface
 # (see the output for the URL
 # you will have to open in your browser)
-./web-ui
+run/web-ui
 ```
 
 The web-UI will then (probably) be available at:
 
 <http://localhost:3030/#/dataset/okh/query>
 
-You can now try your first [sample query](sample-query.txt)
+You can now try your first [sample query](res/sample-query.txt)
 on the OKH data.
