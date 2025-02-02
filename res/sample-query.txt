@@ -5,6 +5,7 @@
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 #PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX ods: <http://w3id.org/oseg/ont/ods#>
 PREFIX okh: <http://w3id.org/oseg/ont/okh#>
 PREFIX otrl: <http://purl.org/oseg/ontologies/OTRL#>
 PREFIX wf: <https://wikifactory.com/>
