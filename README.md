@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2021-2024 Robin Vobruba <hoijui.quaero@gmail.com>
+SPDX-FileCopyrightText: 2021-2025 Robin Vobruba <hoijui.quaero@gmail.com>
 
 SPDX-License-Identifier: CC0-1.0
 -->
@@ -7,11 +7,11 @@ SPDX-License-Identifier: CC0-1.0
 # OKH RDF triple-store tester
 
 [![License](
-    https://img.shields.io/github/license/OPEN-NEXT/LOSH-RDF-DB-tester.svg?style=flat)](
+    https://img.shields.io/github/license/osegermany/OKH-RDF-DB.svg?style=flat)](
     ./LICENSE.txt)
 [![REUSE status](
-    https://api.reuse.software/badge/github.com/OPEN-NEXT/LOSH-RDF-DB-tester)](
-    https://api.reuse.software/info/github.com/OPEN-NEXT/LOSH-RDF-DB-tester)
+    https://api.reuse.software/badge/github.com/osegermany/OKH-RDF-DB)](
+    https://api.reuse.software/info/github.com/osegermany/OKH-RDF-DB)
 
 This contains instructions and scripts
 to help you easily test the [OKH](https://github.com/iop-alliance/OpenKnowHow)
@@ -31,7 +31,7 @@ In short, it:
 
 ```bash
 # Gets this project onto your computer.
-git clone "https://github.com/OPEN-NEXT/LOSH-RDF-DB-tester.git" "OKH-DB-tester"
+git clone "https://github.com/osegermany/OKH-RDF-DB.git" "OKH-DB-tester"
 cd "OKH-DB-tester"
 
 # Creates the DB and fills it with the data
