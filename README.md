@@ -16,6 +16,8 @@ SPDX-License-Identifier: CC0-1.0
 This contains instructions and scripts
 to help you easily test the [OKH](https://github.com/iop-alliance/OpenKnowHow)
 [data](https://gitlab.opensourceecology.de/verein/projekte/losh-rdf)
+or the (private)
+[experimental data](https://github.com/OSEGermany/OKH-data-experimental)
 with the [Apache Jena](https://jena.apache.org/) triple-store.
 
 In short, it:
@@ -39,6 +41,8 @@ cd "OKH-DB-tester"
 # of how to run SPARQL queries on the command-line).
 # NOTE This might take quite a while to finish
 run/fill-db
+# or
+run/fill-db --experimental
 
 # Starts the web-interface
 # (see the output for the URL
