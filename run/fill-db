@@ -157,4 +157,4 @@ echo "    --loc \"$db_dir\" \\"
 echo "    --query \"$res_dir/sample-query.txt\""
 echo
 echo "Or start the Web interface for running SPARQL queries with:"
-echo "./web-ui"
+echo "run/web-ui"
