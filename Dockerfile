@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 # NOTE Lint this file with https://hadolint.github.io/hadolint/
 
-# SPDX-FileCopyrightText: 2024 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2024-2025 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: Unlicense
 
@@ -13,7 +13,8 @@ WORKDIR /srv/rdf
 RUN install_packages \
     ca-certificates \
     git \
-    unzip
+    unzip \
+    wget
 
 COPY res ./res
 COPY run ./run
