@@ -14,9 +14,23 @@ PREFIX wfs: <https://wikifactory.com/@shirako/>
 PREFIX loshdummymosha: <https://github.com/OPEN-NEXT/LOSH-dummy-MOSH-A/1.0.0#>
 PREFIX ohloom: <https://gitlab.com/OSEGermany/ohloom/1.0.0#>
 
-SELECT ?subject ?predicate ?object
+# All triples
+#SELECT ?subject ?predicate ?object
+#WHERE {
+#  ?subject ?predicate ?object
+#}
+
+# All Projects type triples
+#SELECT ?subject ?predicate ?object
+#WHERE {
+#  ?subject rdf:type okh:Module
+#}
+
+# All Projects names and their licenses
+SELECT ?name ?license
 WHERE {
-  #?subject ?predicate ?object
-  ?subject rdf:type okh:Module
+  ?subject rdf:type okh:Module ;
+    rdfs:label ?name ;
+    ods:license ?license
 }
 
