@@ -20,7 +20,9 @@ script_name="$(basename "$(readlink -f "${BASH_SOURCE[0]}")")"
 # initial default values
 APP_NAME="RDF DB Filler"
 CLONE_URL_OKH_ONTOLOGY="https://github.com/iop-alliance/OpenKnowHow.git"
-CLONE_URL_LOSH_DATA="https://gitlab.opensourceecology.de/verein/projekte/losh-rdf.git"
+CLONE_URL_OLD_DATA="https://gitlab.opensourceecology.de/verein/projekte/losh-rdf.git"
+CLONE_URL_EXP_DATA="git@github.com:OSEGermany/OKH-data-experimental.git"
+data_url="$CLONE_URL_OLD_DATA"
 cleanup=false
 online=true
 
@@ -35,6 +37,9 @@ function print_help() {
 	echo "    Print this usage help and exit"
 	echo "  --offline"
 	echo "    Do not try to fetch git repos"
+	echo "  --experimental"
+	echo "    Uses the new experimental data source"
+	echo "    NOTE: This data is private, so you need to get access first"
 	echo "Examples:"
 	echo "  $script_name"
 	echo "  $script_name --help"
@@ -55,6 +60,9 @@ do
 			;;
 		-o|--offline)
 			online=false
+			;;
+		--experimental)
+			data_url="$CLONE_URL_EXP_DATA"
 			;;
 		*) # non-/unknown option
 			POSITIONAL+=("$arg") # save it in an array for later
@@ -98,9 +106,9 @@ ont_dir="$data_dir/$ont_dir_name"
 repo_ensure_latest "$ont_dir" "$CLONE_URL_OKH_ONTOLOGY"
 ontology_ttls_root="$ont_dir/src/spec"
 
-data_dir_name="$(basename --suffix ".git" "$CLONE_URL_LOSH_DATA")"
+data_dir_name="$(basename --suffix ".git" "$data_url")"
 projs_data_dir="$data_dir/$data_dir_name"
-repo_ensure_latest "$projs_data_dir" "$CLONE_URL_LOSH_DATA" "main"
+repo_ensure_latest "$projs_data_dir" "$data_url" "main"
 data_ttls_root="$projs_data_dir/RDF"
 
 if $cleanup
