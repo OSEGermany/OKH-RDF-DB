@@ -31,10 +31,14 @@ function print_help() {
 	echo "Usage:"
 	echo "  $script_name [OPTION...]"
 	echo "Options:"
-	echo "  -h, --help          Print this usage help and exit"
-	echo "  --offline           Do not try to fetch git repos"
+	echo "  -h, --help"
+	echo "    Print this usage help and exit"
+	echo "  --offline"
+	echo "    Do not try to fetch git repos"
 	echo "Examples:"
 	echo "  $script_name"
+	echo "  $script_name --help"
+	echo "  $script_name --experimental"
 }
 
 # read command-line args
