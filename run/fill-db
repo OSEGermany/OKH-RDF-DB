@@ -142,18 +142,29 @@ then
 	done
 fi
 
-echo
-echo "Setting up the DB in '$db_dir' ..."
+tmp_db_dir="${db_dir}_tmp"
+bak_db_dir="${db_dir}_bak"
 
-mkdir -p "$db_dir"
+echo
+echo "Setting up the DB in '$db_dir' (temp dir: '$tmp_db_dir') ..."
+
+rm -Rf "$tmp_db_dir"
+mkdir -p "$tmp_db_dir"
 find \
 	"$ontology_ttls_root" \
 	"$data_ttls_root" \
 	-name "*.ttl" \
 	-print0 \
 	| xargs -0 "$jena_db_data_injector" \
-	--loc "$db_dir" \
+	--loc "$tmp_db_dir" \
 	--syntax turtle
+if [ -e "$db_dir" ]
+then
+	rm -Rf "$bak_db_dir"
+	mv "$db_dir" "$bak_db_dir"
+	echo "The old DB is now at '$bak_db_dir'."
+fi
+mv "$tmp_db_dir" "$db_dir"
 echo "done. (Setting up the DB)"
 
 echo
