@@ -41,10 +41,14 @@ function print_help() {
 	echo "  --experimental"
 	echo "    Uses the new experimental data source"
 	echo "    NOTE: This data is private, so you need to get access first"
+	echo "  --custom-data <GIT-REPO-URL> <BRANCH>"
+	echo "    Uses the given git reoo and branch as the data-source"
+	echo "    Please use an HTTP(S) git URL without the need for authentification."
 	echo "Examples:"
 	echo "  $script_name"
 	echo "  $script_name --help"
 	echo "  $script_name --experimental"
+	echo "  $script_name --custom-data https://gitlab.opensourceecology.de/verein/projekte/losh-rdf.git main"
 }
 
 # read command-line args
@@ -64,6 +68,12 @@ do
 			;;
 		--experimental)
 			data_url="$CLONE_URL_EXP_DATA"
+			;;
+		--custom-data)
+			data_url="$1"
+			shift
+			data_branch="$1"
+			shift
 			;;
 		*) # non-/unknown option
 			POSITIONAL+=("$arg") # save it in an array for later
