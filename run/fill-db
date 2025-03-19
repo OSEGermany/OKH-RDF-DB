@@ -23,6 +23,7 @@ CLONE_URL_OKH_ONTOLOGY="https://github.com/iop-alliance/OpenKnowHow.git"
 CLONE_URL_OLD_DATA="https://gitlab.opensourceecology.de/verein/projekte/losh-rdf.git"
 CLONE_URL_EXP_DATA="git@github.com:OSEGermany/OKH-data-experimental.git"
 data_url="$CLONE_URL_OLD_DATA"
+data_branch="main"
 cleanup=false
 online=true
 
@@ -110,7 +111,7 @@ data_slug_parent="$(basename "$(dirname "$data_url")")"
 data_slug_repo="$(basename --suffix ".git" "$data_url")"
 data_dir_name="${data_slug_parent}__$data_slug_repo"
 projs_data_dir="$data_dir/$data_dir_name"
-repo_ensure_latest "$projs_data_dir" "$data_url" "main"
+repo_ensure_latest "$projs_data_dir" "$data_url" "$data_branch"
 data_ttls_root="$projs_data_dir/RDF"
 
 if $cleanup
