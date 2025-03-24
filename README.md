@@ -31,6 +31,9 @@ In short, it:
 
 ## Usage
 
+There is a published docker image with the tag `hoijui/okh-db:master`;
+use that or go more into details like this:
+
 ```bash
 # Gets this project onto your computer.
 git clone "https://github.com/osegermany/OKH-RDF-DB.git" "OKH-DB-tester"
