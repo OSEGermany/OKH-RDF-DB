@@ -206,7 +206,7 @@ BEGIN {
 }
 END {
 	print("\nTotal loading time:");
-	# ... is printed by the CLi command "time"
+	# ... is printed by the CLI command "time"
 }
 '
 echo
