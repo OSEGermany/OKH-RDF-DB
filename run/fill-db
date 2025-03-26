@@ -163,7 +163,7 @@ echo "Setting up the DB in '$db_dir' (temp dir: '$tmp_db_dir') ..."
 
 rm -Rf "$tmp_db_dir"
 mkdir -p "$tmp_db_dir"
-find \
+time find \
 	"$ontology_ttls_root" \
 	"$data_ttls_root" \
 	-name "*.ttl" \
