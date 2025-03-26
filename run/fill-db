@@ -48,7 +48,7 @@ function print_help() {
 	echo "  $script_name"
 	echo "  $script_name --help"
 	echo "  $script_name --experimental"
-	echo "  $script_name --custom-data https://gitlab.opensourceecology.de/verein/projekte/losh-rdf.git main"
+	echo "  $script_name --custom-data \"$CLONE_URL_OLD_DATA\" main"
 }
 
 # read command-line args
