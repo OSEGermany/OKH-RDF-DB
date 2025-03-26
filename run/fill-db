@@ -171,6 +171,7 @@ time find \
 	-print0 \
 	| xargs -0 "$jena_db_data_injector" \
 	--loc "$tmp_db_dir" \
+	--loader=parallel \
 	--syntax turtle \
 	2>&1 | awk -v ORS='' \
 		'
