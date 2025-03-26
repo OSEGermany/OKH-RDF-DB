@@ -122,7 +122,7 @@ data_slug_repo="$(basename --suffix ".git" "$data_url")"
 data_dir_name="${data_slug_parent}__$data_slug_repo"
 projs_data_dir="$data_dir/$data_dir_name"
 repo_ensure_latest "$projs_data_dir" "$data_url" "$data_branch"
-data_ttls_root="$projs_data_dir/RDF"
+data_ttls_root="$projs_data_dir"
 
 if $cleanup
 then
