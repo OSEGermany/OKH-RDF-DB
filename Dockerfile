@@ -19,6 +19,13 @@ RUN install_packages \
 COPY res ./res
 COPY run ./run
 RUN run/install
+
+ENV DATA_DIR="/data"
+ENV DB_DIR="/db"
+
+RUN mkdir -p "$DATA_DIR"
+RUN mkdir -p "$DB_DIR"
+
 RUN run/fill-db --samples
 
 # NOTE Labels and annotations are added by CI (outside this Dockerfile);
