@@ -21,10 +21,10 @@ COPY run ./run
 RUN run/install
 
 ENV DATA_DIR="/data"
-ENV DB_DIR="/db"
+ENV DB_BASE_DIR="/db"
 
 RUN mkdir -p "$DATA_DIR"
-RUN mkdir -p "$DB_DIR"
+RUN mkdir -p "$DB_BASE_DIR"
 
 RUN run/fill-db --samples
 
