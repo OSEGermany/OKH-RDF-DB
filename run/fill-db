@@ -171,16 +171,16 @@ echo "Setting up the DB in '$db_dir' (temp dir: '$tmp_db_dir') ..."
 rm -Rf "$tmp_db_dir"
 mkdir -p "$tmp_db_dir"
 echo "Loading data into the DB ..."
+#		--loader=parallel \
 time find \
 	"$ontology_ttls_root" \
 	"$data_ttls_root" \
 	-name "*.ttl" \
 	-print0 \
 	| xargs -0 "$jena_db_data_injector" \
-	--loc "$tmp_db_dir" \
-	--loader=parallel \
-	--syntax turtle \
-	2>&1 | awk -v ORS='' \
+		--loc "$tmp_db_dir" \
+		--syntax turtle \
+		2>&1 | awk -v ORS='' \
 		'
 # This AWK script only serves to reformat the output
 # of the loading procedure into a less spammy
