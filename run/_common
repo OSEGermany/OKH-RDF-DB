@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# SPDX-FileCopyrightText: 2021 - 2024 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2021 - 2025 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: Unlicense
 
@@ -14,9 +14,9 @@ script_dir="$(dirname "$script_path")"
 
 proj_root_dir="$(cd "$script_dir"/..; pwd)"
 build_dir="$proj_root_dir/build"
-data_dir="$build_dir/data"
-db_dir="$build_dir/rdf_db"
-res_dir="$proj_root_dir/res"
+data_dir="${DATA_DIR:-$build_dir/data}"
+db_dir="${DB_DIR:-$build_dir/rdf_db}"
+res_dir="${RES_DIR:-$proj_root_dir/res}"
 
 # See: https://stackoverflow.com/a/7335120/586229
 JAVA_VER=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}' | awk -F '.' '{sub("^$", "0", $2); print $1$2}')
@@ -78,4 +78,3 @@ function ensure_tool() {
 		echo "done."
 	fi
 }
-

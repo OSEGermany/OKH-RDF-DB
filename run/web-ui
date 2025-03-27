@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# SPDX-FileCopyrightText: 2021 - 2024 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2021 - 2025 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: Unlicense
 
@@ -72,7 +72,7 @@ echo "Once it is started, you are ready to run SPARQL queries"
 echo "in your browser under: $browse_url"
 echo "Or query it with SPARQL on: $query_url"
 echo
-cd "$build_dir"
+cd "$db_dir"
 "$jena_fuseki_server" \
 	--update \
 	--tdb2 \
