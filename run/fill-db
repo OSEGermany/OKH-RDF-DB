@@ -178,15 +178,53 @@ echo
 echo "Setting up the DB in '$db_dir' (temp dir: '$db_tmp_dir') ..."
 
 rm -Rf "$db_tmp_dir"
+mkdir -p "$db_tmp_dir"
 echo "Loading data into the DB ..."
+#		--loader=parallel \
 time find \
 	"$ontology_ttls_root" \
 	"$data_ttls_root" \
 	-name "*.ttl" \
 	-print0 \
-	| xargs -0 \
-		"$jena_db_data_injector" \
-			--loc "$db_tmp_dir"
+	| xargs -0 "$jena_db_data_injector" \
+		--loc "$db_tmp_dir" \
+		--syntax turtle \
+		2>&1 | awk -v ORS='' \
+		'
+# This AWK script only serves to reformat the output
+# of the loading procedure into a less spammy
+# and more informative one.
+BEGIN {
+	files_total = 0;
+	tuples_total = 0;
+}
+/Start:/ { printf("\n%s\n", $0); }
+/End file:/ { printf("."); }
+/Finished:/ {
+    printf("\n%s\n", $0)
+
+    vals = $0
+    gsub(/.* Finished: /, "", vals)
+
+    files_batch = vals
+    gsub(/ files: .*/, "", files_batch)
+    gsub(/,/, "", files_batch)
+    files_total = files_total + (files_batch + 0)
+
+    tuples_batch = vals
+    gsub(/.* files: /, "", tuples_batch)
+    gsub(/ .*/, "", tuples_batch)
+    gsub(/,/, "", tuples_batch)
+    tuples_total = tuples_total + (tuples_batch + 0);
+
+	printf("Files total: %d\n", files_total);
+	printf("Tuples total: %d\n", tuples_total);
+}
+END {
+	print("\nTotal loading time:");
+	# ... is printed by the CLI command "time"
+}
+'
 echo
 if [ -e "$db_dir" ]
 then
