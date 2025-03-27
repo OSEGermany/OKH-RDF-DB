@@ -173,14 +173,11 @@ then
 	done
 fi
 
-tmp_db_dir="${db_dir}_tmp"
-bak_db_dir="${db_dir}_bak"
-
 echo
-echo "Setting up the DB in '$db_dir' (temp dir: '$tmp_db_dir') ..."
+echo "Setting up the DB in '$db_dir' (temp dir: '$db_tmp_dir') ..."
 
-rm -Rf "$tmp_db_dir"
-mkdir -p "$tmp_db_dir"
+rm -Rf "$db_tmp_dir"
+mkdir -p "$db_tmp_dir"
 echo "Loading data into the DB ..."
 #		--loader=parallel \
 time find \
@@ -189,7 +186,7 @@ time find \
 	-name "*.ttl" \
 	-print0 \
 	| xargs -0 "$jena_db_data_injector" \
-		--loc "$tmp_db_dir" \
+		--loc "$db_tmp_dir" \
 		--syntax turtle \
 		2>&1 | awk -v ORS='' \
 		'
@@ -230,11 +227,11 @@ END {
 echo
 if [ -e "$db_dir" ]
 then
-	rm -Rf "$bak_db_dir"
-	mv "$db_dir" "$bak_db_dir"
-	echo "The old DB is now at '$bak_db_dir'."
+	rm -Rf "$db_bak_dir"
+	mv "$db_dir" "$db_bak_dir"
+	echo "The old DB is now at '$db_bak_dir'."
 fi
-mv "$tmp_db_dir" "$db_dir"
+mv "$db_tmp_dir" "$db_dir"
 echo "done. (Setting up the DB)"
 
 echo

@@ -15,7 +15,10 @@ script_dir="$(dirname "$script_path")"
 proj_root_dir="$(cd "$script_dir"/..; pwd)"
 build_dir="$proj_root_dir/build"
 data_dir="${DATA_DIR:-$build_dir/data}"
-db_dir="${DB_DIR:-$build_dir/rdf_db}"
+db_base_dir="${DB_BASE_DIR:-$build_dir/rdf_db}"
+db_dir="$db_base_dir/active"
+db_tmp_dir="$db_base_dir/tmp"
+db_bak_dir="$db_base_dir/backup"
 res_dir="${RES_DIR:-$proj_root_dir/res}"
 
 # See: https://stackoverflow.com/a/7335120/586229
