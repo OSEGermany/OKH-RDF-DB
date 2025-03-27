@@ -88,6 +88,7 @@ do
 			;;
 		--samples)
 			data_url="$CLONE_URL_SAMPLE_DATA"
+			data_branch="master"
 			;;
 		*) # non-/unknown option
 			POSITIONAL+=("$arg") # save it in an array for later
