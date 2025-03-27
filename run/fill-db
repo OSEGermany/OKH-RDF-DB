@@ -45,6 +45,8 @@ function print_help() {
 	echo "  --custom-data <GIT-REPO-URL> <BRANCH>"
 	echo "    Uses the given git reoo and branch as the data-source."
 	echo "    Please use an HTTP(S) git URL without the need for authentification."
+	echo "  --local-data <DIR>"
+	echo "    Uses the given local directory as the data-source."
 	echo "  --samples"
 	echo "    Uses the a tiny set of sample data plus the ontology."
 	echo "Examples:"
@@ -52,6 +54,7 @@ function print_help() {
 	echo "  $script_name --help"
 	echo "  $script_name --experimental"
 	echo "  $script_name --custom-data \"$CLONE_URL_OLD_DATA\" main"
+	echo "  $script_name --local-data /data"
 	echo "  $script_name --samples"
 }
 
@@ -79,6 +82,10 @@ do
 			data_branch="$1"
 			shift
 			;;
+		--local-data)
+			data_url=""
+			data_branch=""
+			;;
 		--samples)
 			data_url="$CLONE_URL_SAMPLE_DATA"
 			;;
@@ -93,6 +100,7 @@ function repo_ensure_latest() {
 	dir="$1"
 	clone_url="$2"
 	main_branch="${3:-master}"
+	mkdir -p "$(dirname "$dir")"
 	if [ -d "$dir" ]
 	then
 		if $online
@@ -113,23 +121,26 @@ function repo_ensure_latest() {
 ensure_java_version
 ensure_tool "$JENA_HOME" "$JENA_DL_URL" "Apache Jena"
 
-mkdir -p "$build_dir"
-mkdir -p "$data_dir"
-
 echo
 echo "Get/Update input RDF ..."
 
 ont_dir_name="$(basename --suffix ".git" "$CLONE_URL_OKH_ONTOLOGY")"
-ont_dir="$data_dir/$ont_dir_name"
+ont_dir="$HOME/.local/cache/$ont_dir_name"
 repo_ensure_latest "$ont_dir" "$CLONE_URL_OKH_ONTOLOGY"
 ontology_ttls_root="$ont_dir/src/spec"
 
-data_slug_parent="$(basename "$(dirname "$data_url")")"
-data_slug_repo="$(basename --suffix ".git" "$data_url")"
-data_dir_name="${data_slug_parent}__$data_slug_repo"
-projs_data_dir="$data_dir/$data_dir_name"
-repo_ensure_latest "$projs_data_dir" "$data_url" "$data_branch"
-data_ttls_root="$projs_data_dir"
+if [ -z "$data_url" ]
+then
+	data_ttls_root="$data_dir"
+else
+	mkdir -p "$data_dir"
+	data_slug_parent="$(basename "$(dirname "$data_url")")"
+	data_slug_repo="$(basename --suffix ".git" "$data_url")"
+	data_dir_name="${data_slug_parent}__$data_slug_repo"
+	projs_data_dir="$data_dir/$data_dir_name"
+	repo_ensure_latest "$projs_data_dir" "$data_url" "$data_branch"
+	data_ttls_root="$projs_data_dir"
+fi
 
 if $cleanup
 then
