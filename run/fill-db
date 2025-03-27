@@ -181,15 +181,19 @@ rm -Rf "$db_tmp_dir"
 mkdir -p "$db_tmp_dir"
 echo "Loading data into the DB ..."
 #		--loader=parallel \
-time find \
+ttl_list_file="/tmp/ttls_$RANDOM.csv"
+find \
 	"$ontology_ttls_root" \
 	"$data_ttls_root" \
 	-name "*.ttl" \
-	-print0 \
-	| xargs -0 "$jena_db_data_injector" \
+	> "$ttl_list_file"
+time while mapfile -t -n 10000 batch && ((${#batch[@]}))
+do
+	"$jena_db_data_injector" \
 		--loc "$db_tmp_dir" \
 		--syntax turtle \
-		2>&1 | awk -v ORS='' \
+		"${batch[@]}"
+done < "$ttl_list_file" 2>&1 | awk -v ORS='' \
 		'
 # This AWK script only serves to reformat the output
 # of the loading procedure into a less spammy
