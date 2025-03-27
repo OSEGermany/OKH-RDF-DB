@@ -27,10 +27,14 @@ PREFIX ohloom: <https://gitlab.com/OSEGermany/ohloom/1.0.0#>
 #}
 
 # All Projects names and their licenses
-SELECT ?name ?license
-WHERE {
-  ?subject rdf:type okh:Module ;
-    rdfs:label ?name ;
-    ods:license ?license
-}
+#SELECT ?name ?license
+#WHERE {
+#  ?subject rdf:type okh:Module ;
+#    rdfs:label ?name ;
+#    ods:license ?license
+#}
 
+SELECT (COUNT(*) AS ?count)
+WHERE {
+  ?proj a okh:Module
+}
