@@ -16,6 +16,7 @@ proj_root_dir="$(cd "$script_dir"/..; pwd)"
 build_dir="$proj_root_dir/build"
 data_dir="${DATA_DIR:-$build_dir/data}"
 db_base_dir="${DB_BASE_DIR:-$build_dir/rdf_db}"
+# This is where our RDF data will be stored (in a query-efficient way)
 db_dir="$db_base_dir/active"
 db_tmp_dir="$db_base_dir/tmp"
 db_bak_dir="$db_base_dir/backup"
@@ -36,7 +37,6 @@ JENA_HOME="$HOME/.local/opt/apache-jena-$JENA_VERSION"
 # For the (SPARQL) query web interface to the DB
 JENA_FUSEKI_HOME="$HOME/.local/opt/apache-jena-fuseki-$JENA_VERSION"
 
-# This dir is where our RDF data will be stored (in a query-efficient way)
 jena_db_data_injector="$JENA_HOME/bin/tdb2.tdbloader"
 jena_db_data_querier="$JENA_HOME/bin/tdb2.tdbquery"
 jena_fuseki_server="$JENA_FUSEKI_HOME/fuseki-server"
