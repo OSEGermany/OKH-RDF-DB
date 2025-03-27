@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# SPDX-FileCopyrightText: 2021 - 2024 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2021 - 2025 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: Unlicense
 
@@ -22,6 +22,7 @@ APP_NAME="RDF DB Filler"
 CLONE_URL_OKH_ONTOLOGY="https://github.com/iop-alliance/OpenKnowHow.git"
 CLONE_URL_OLD_DATA="https://gitlab.opensourceecology.de/verein/projekte/okh/data.git"
 CLONE_URL_EXP_DATA="git@github.com:OSEGermany/OKH-data-experimental.git"
+CLONE_URL_SAMPLE_DATA="https://gitlab.opensourceecology.de/verein/projekte/okh/data-sample.git"
 data_url="$CLONE_URL_OLD_DATA"
 data_branch="main"
 cleanup=false
@@ -44,11 +45,14 @@ function print_help() {
 	echo "  --custom-data <GIT-REPO-URL> <BRANCH>"
 	echo "    Uses the given git reoo and branch as the data-source."
 	echo "    Please use an HTTP(S) git URL without the need for authentification."
+	echo "  --samples"
+	echo "    Uses the a tiny set of sample data plus the ontology."
 	echo "Examples:"
 	echo "  $script_name"
 	echo "  $script_name --help"
 	echo "  $script_name --experimental"
 	echo "  $script_name --custom-data \"$CLONE_URL_OLD_DATA\" main"
+	echo "  $script_name --samples"
 }
 
 # read command-line args
@@ -74,6 +78,9 @@ do
 			shift
 			data_branch="$1"
 			shift
+			;;
+		--samples)
+			data_url="$CLONE_URL_SAMPLE_DATA"
 			;;
 		*) # non-/unknown option
 			POSITIONAL+=("$arg") # save it in an array for later
