@@ -93,6 +93,8 @@ do
 		--local-data)
 			data_url=""
 			data_branch=""
+			data_dir="$1"
+			shift
 			;;
 		--samples)
 			data_url="$CLONE_URL_SAMPLE_DATA"
