@@ -19,7 +19,7 @@ RUN install_packages \
 COPY res ./res
 COPY run ./run
 RUN run/install
-RUN run/fill-db
+RUN run/fill-db --samples
 
 # NOTE Labels and annotations are added by CI (outside this Dockerfile);
 #      see `.github/workflows/docker.yml`.
