@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: 2025 Robin Vobruba <hoijui.quaero@gmail.com>
+#
+# SPDX-License-Identifier: Unlicense
+
+PREFIX ods: <http://w3id.org/oseg/ont/ods#>
+PREFIX okh: <http://w3id.org/oseg/ont/okh#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX otrl: <http://w3id.org/oseg/ont/otrl#>
+PREFIX spdxt: <http://spdx.org/rdf/terms#>
+PREFIX ap: <https://www.appropedia.org/>
+
+# All (direct) triples of a project (aka module)
+SELECT ?pred ?obj
+WHERE {
+  <https://www.appropedia.org/40/Bamboo_demonstration_motor/project> ?pred ?obj
+}
+LIMIT 100

@@ -308,7 +308,7 @@ echo
 echo "for example:"
 echo "$jena_db_data_querier \\"
 echo "    --loc \"$db_dir\" \\"
-echo "    --query \"$res_dir/sample-query.txt\""
+echo "    --query \"$res_dir/sample-queries/list-projects.sparql\""
 echo
 echo "Or start the Web interface for running SPARQL queries with:"
 echo "run/web-ui"

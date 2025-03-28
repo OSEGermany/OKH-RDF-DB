@@ -57,5 +57,5 @@ The web-UI will then (probably) be available at:
 
 <http://localhost:3030/#/dataset/okh/query>
 
-You can now try your first [sample query](res/sample-query.txt)
+You can now try your first [sample query](res/sample-queries/list-projects.sparql)
 on the OKH data.

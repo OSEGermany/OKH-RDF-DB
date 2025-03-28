@@ -4,37 +4,17 @@
 
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-#PREFIX bd: <http://www.bigdata.com/rdf#>
 PREFIX ods: <http://w3id.org/oseg/ont/ods#>
 PREFIX okh: <http://w3id.org/oseg/ont/okh#>
 PREFIX otrl: <http://purl.org/oseg/ontologies/OTRL#>
-PREFIX wf: <https://wikifactory.com/>
-PREFIX ap: <https://www.appropedia.org/>
-PREFIX wfs: <https://wikifactory.com/@shirako/>
 PREFIX loshdummymosha: <https://github.com/OPEN-NEXT/LOSH-dummy-MOSH-A/1.0.0#>
 PREFIX ohloom: <https://gitlab.com/OSEGermany/ohloom/1.0.0#>
 
-# All triples
-#SELECT ?subject ?predicate ?object
-#WHERE {
-#  ?subject ?predicate ?object
-#}
-
-# All Projects type triples
-#SELECT ?subject ?predicate ?object
-#WHERE {
-#  ?subject rdf:type okh:Module
-#}
-
 # All Projects names and their licenses
-#SELECT ?name ?license
-#WHERE {
-#  ?subject rdf:type okh:Module ;
-#    rdfs:label ?name ;
-#    ods:license ?license
-#}
-
-SELECT (COUNT(*) AS ?count)
+SELECT ?name ?license
 WHERE {
-  ?proj a okh:Module
+  ?subject rdf:type okh:Module ;
+  rdfs:label ?name ;
+  ods:license ?license
 }
+LIMIT 100
