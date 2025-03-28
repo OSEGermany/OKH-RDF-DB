@@ -241,6 +241,12 @@ then
 	lines_syntax_violations="$(cat "$validation_output_file" | wc -l)"
 	num_syntax_violations="$((lines_syntax_violations / 2))"
 	echo "# of Turtle syntax violations: $num_syntax_violations"
+	if [ "$num_syntax_violations" -gt 0 ]
+	then
+		echo
+		echo "There are syntax violations -> (non-zero-)exiting"
+		exit 1
+	fi
 	if $validate_only
 	then
 		echo
