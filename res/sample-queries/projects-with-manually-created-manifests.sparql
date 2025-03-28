@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: 2025 Robin Vobruba <hoijui.quaero@gmail.com>
+#
+# SPDX-License-Identifier: Unlicense
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ods: <http://w3id.org/oseg/ont/ods#>
+PREFIX okh: <http://w3id.org/oseg/ont/okh#>
+PREFIX okhkrawl: <http://w3id.org/oseg/ont/okhkrawl#>
+PREFIX void: <http://rdfs.org/ns/void#>
+
+# All Projects with manualy created manifests
+# HACK Note that we ask for _**generated** manifests_. That is due to an error in the krawler, having swaped manifest and generated-manifests.
+SELECT ?ds ?src ?proj ?name ?license
+WHERE {
+  ?ds a ods:Dataset ;
+    ods:hasSource ?src ;
+    void:rootResource ?proj .
+  ?proj okh:name ?name .
+  ?src ods:license ?license ;
+    ods:dataSourcingProcedure okhkrawl:dataSourcingProcedureGeneratedManifest .
+}
+LIMIT 100
