@@ -227,6 +227,7 @@ then
 	echo
 	echo "Validating *.ttl files syntax ..."
 	rm -Rf "$validation_output_file"
+	touch "$validation_output_file"
 	time while mapfile -t -n "$batch_size" batch && ((${#batch[@]}))
 	do
 		"$jena_db_data_validator" \
