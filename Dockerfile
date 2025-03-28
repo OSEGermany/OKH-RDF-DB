@@ -15,6 +15,7 @@ WORKDIR /srv/rdf
 RUN install_packages \
     ca-certificates \
     git \
+    pv \
     unzip \
     wget
 

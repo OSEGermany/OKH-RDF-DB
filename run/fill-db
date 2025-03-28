@@ -235,7 +235,8 @@ then
 			|| true 2>&1 \
 			| grep -v INFO -B 1 \
 			| tee --append "$validation_output_file"
-	done < "$ttl_list_file"
+	done < "$ttl_list_file" 2>&1 \
+		| pv -pet --line-mode --size "$num_ttls" --discard
 	echo "Validation results stored in file '$validation_output_file'."
 	lines_syntax_violations="$(cat "$validation_output_file" | wc -l)"
 	num_syntax_violations="$((lines_syntax_violations / 2))"
@@ -260,43 +261,8 @@ do
 		--syntax turtle \
 		"${batch[@]}"
 #		--loader=parallel \
-done < "$ttl_list_file" 2>&1 | awk -v ORS='' \
-	'
-# This AWK script only serves to reformat the output
-# of the loading procedure into a less spammy
-# and more informative one.
-BEGIN {
-	files_total = '"$num_ttls"';
-	files_loaded = 0;
-	tuples_loaded = 0;
-}
-/Start:/ { printf("\n%s\n", $0); }
-/End file:/ { printf("."); }
-/Finished:/ {
-    printf("\n%s\n", $0)
-
-    vals = $0
-    gsub(/.* Finished: /, "", vals)
-
-    files_batch = vals
-    gsub(/ files: .*/, "", files_batch)
-    gsub(/,/, "", files_batch)
-    files_loaded = files_loaded + (files_batch + 0)
-
-    tuples_batch = vals
-    gsub(/.* files: /, "", tuples_batch)
-    gsub(/ .*/, "", tuples_batch)
-    gsub(/,/, "", tuples_batch)
-    tuples_loaded = tuples_loaded + (tuples_batch + 0);
-
-	printf("Files loaded so far: %d / %d\n", files_loaded, files_total);
-	printf("Tuples loaded so far: %d\n", tuples_loaded);
-}
-END {
-	print("\nTotal loading time:");
-	# ... is printed by the CLI command "time"
-}
-'
+done < "$ttl_list_file" 2>&1 \
+	| pv -pet --line-mode --size "$num_ttls" --discard
 echo
 if [ -e "$db_dir" ]
 then
