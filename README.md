@@ -15,7 +15,7 @@ SPDX-License-Identifier: CC0-1.0
 
 This contains instructions and scripts
 to help you easily test the [OKH](https://github.com/iop-alliance/OpenKnowHow)
-[data](https://gitlab.opensourceecology.de/verein/projekte/losh-rdf)
+[data](https://gitlab.opensourceecology.de/verein/projekte/data)
 or the (private)
 [experimental data](https://github.com/OSEGermany/OKH-data-experimental)
 with the [Apache Jena](https://jena.apache.org/) triple-store.
