@@ -273,12 +273,14 @@ done < "$ttl_list_file" 2>&1 \
 echo
 if [ -e "$db_dir" ]
 then
+	echo "Moving the current DB to the backup location '$db_bak_dir' ..."
 	rm -Rf "$db_bak_dir"
 	mv "$db_dir" "$db_bak_dir"
-	echo "The old DB is now at '$db_bak_dir'."
+	echo "Moving the current DB to the backup location '$db_bak_dir' - done."
 fi
+echo "Moving the new/temporary DB to the active location at '$db_dir' ..."
 mv "$db_tmp_dir" "$db_dir"
-echo "done. (Setting up the DB)"
+echo "Moving the new/temporary DB to the active location at '$db_dir' - done."
 
 echo
 echo "Ready to run SPARQL queries!"
