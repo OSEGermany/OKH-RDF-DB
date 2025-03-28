@@ -29,6 +29,9 @@ data_branch="main"
 cleanup=false
 online=true
 batch_size="$BATCH_SIZE_DEFAULT"
+validate=false
+validate_only=false
+validation_output_file="$build_dir/ttl_validation_errors.txt"
 
 function print_help() {
 
@@ -39,6 +42,12 @@ function print_help() {
 	echo "Options:"
 	echo "  -h, --help"
 	echo "    Print this usage help and exit"
+	echo "  --validate"
+	echo "    Validate the *.ttl files before loading them into the DB"
+	echo "    (output: '$validation_output_file')"
+	echo "  --validate-only"
+	echo "    Validate the *.ttl files and exit"
+	echo "    (output: '$validation_output_file')"
 	echo "  --batch-size <NUMBER>"
 	echo "    The number of Turtle fiels to load into the DB at once [default: $BATCH_SIZE_DEFAULT]"
 	echo "  --offline"
@@ -60,6 +69,7 @@ function print_help() {
 	echo "  $script_name --custom-data \"$CLONE_URL_OLD_DATA\" main"
 	echo "  $script_name --local-data /data --batch-size 1000"
 	echo "  $script_name --samples"
+	echo "  $script_name --validate --samples"
 }
 
 # read command-line args
@@ -73,6 +83,13 @@ do
 		-h|--help)
 			print_help
 			exit 0
+			;;
+		--validate)
+			validate=true
+			;;
+		--validate-only)
+			validate=true
+			validate_only=true
 			;;
 		--batch-size)
 			batch_size="$1"
@@ -200,6 +217,32 @@ find \
 num_ttls="$(cat "$ttl_list_file" | wc -l)"
 echo "# *.ttl files: $num_ttls"
 
+if $validate
+then
+	echo
+	echo "Validating *.ttl files syntax ..."
+	rm -Rf "$validation_output_file"
+	time while mapfile -t -n "$batch_size" batch && ((${#batch[@]}))
+	do
+		"$jena_db_data_validator" \
+			--validate \
+			"${batch[@]}" \
+			|| true 2>&1 \
+			| grep -v INFO -B 1 \
+			| tee --append "$validation_output_file"
+	done < "$ttl_list_file"
+	echo "Validation results stored in file '$validation_output_file'."
+	lines_syntax_violations="$(cat "$validation_output_file" | wc -l)"
+	num_syntax_violations="$((lines_syntax_violations / 2))"
+	echo "# of Turtle syntax violations: $num_syntax_violations"
+	if $validate_only
+	then
+		echo
+		echo "done."
+		exit 0
+	fi
+fi
+
 rm -Rf "$db_tmp_dir"
 mkdir -p "$db_tmp_dir"
 
@@ -213,7 +256,7 @@ do
 		"${batch[@]}"
 #		--loader=parallel \
 done < "$ttl_list_file" 2>&1 | awk -v ORS='' \
-		'
+	'
 # This AWK script only serves to reformat the output
 # of the loading procedure into a less spammy
 # and more informative one.
@@ -269,3 +312,5 @@ echo "    --query \"$res_dir/sample-query.txt\""
 echo
 echo "Or start the Web interface for running SPARQL queries with:"
 echo "run/web-ui"
+echo
+echo "done."
