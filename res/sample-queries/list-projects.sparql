@@ -14,7 +14,7 @@ PREFIX ohloom: <https://gitlab.com/OSEGermany/ohloom/1.0.0#>
 SELECT ?name ?license
 WHERE {
   ?subject rdf:type okh:Module ;
-  rdfs:label ?name ;
+  okh:name ?name ;
   ods:license ?license
 }
 LIMIT 100
