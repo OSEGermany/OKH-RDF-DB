@@ -4,7 +4,7 @@ SPDX-FileCopyrightText: 2021-2025 Robin Vobruba <hoijui.quaero@gmail.com>
 SPDX-License-Identifier: CC0-1.0
 -->
 
-# OKH RDF triple-store tester
+# OKH RDF DB
 
 [![License](
     https://img.shields.io/github/license/osegermany/OKH-RDF-DB.svg?style=flat)](
