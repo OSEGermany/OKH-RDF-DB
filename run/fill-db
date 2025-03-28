@@ -237,7 +237,7 @@ then
 			| grep -v INFO -B 1 \
 			| tee --append "$validation_output_file"
 	done < "$ttl_list_file" 2>&1 \
-		| pv -pet --line-mode --size "$num_ttls" --discard
+		| pv -pet --line-mode --size "$num_ttls" > /dev/null
 	echo "Validation results stored in file '$validation_output_file'."
 	lines_syntax_violations="$(cat "$validation_output_file" | wc -l)"
 	num_syntax_violations="$((lines_syntax_violations / 2))"
@@ -269,7 +269,7 @@ do
 		"${batch[@]}"
 #		--loader=parallel \
 done < "$ttl_list_file" 2>&1 \
-	| pv -pet --line-mode --size "$num_ttls" --discard
+	| pv -pet --line-mode --size "$num_ttls" > /dev/null
 echo
 if [ -e "$db_dir" ]
 then
