@@ -21,6 +21,7 @@ script_name="$(basename "$(readlink -f "${BASH_SOURCE[0]}")")"
 APP_NAME="RDF DB Filler"
 BATCH_SIZE_DEFAULT=5000
 CLONE_URL_OKH_ONTOLOGY="https://github.com/iop-alliance/OpenKnowHow.git"
+CLONE_URL_ODS_ONTOLOGY="https://codeberg.org/elevont/open-dataset.git"
 CLONE_URL_OLD_DATA="https://gitlab.opensourceecology.de/verein/projekte/okh/data.git"
 CLONE_URL_EXP_DATA="git@github.com:OSEGermany/OKH-data-experimental.git"
 CLONE_URL_SAMPLE_DATA="https://gitlab.opensourceecology.de/verein/projekte/okh/data-sample.git"
@@ -152,10 +153,14 @@ ensure_tool "$JENA_HOME" "$JENA_DL_URL" "Apache Jena"
 echo
 echo "Get/Update input RDF ..."
 
-ont_dir_name="$(basename --suffix ".git" "$CLONE_URL_OKH_ONTOLOGY")"
-ont_dir="$HOME/.local/cache/$ont_dir_name"
-repo_ensure_latest "$ont_dir" "$CLONE_URL_OKH_ONTOLOGY"
-ontology_ttls_root="$ont_dir/src/spec"
+ontologies_dir="$HOME/.local/cache/onts"
+for clone_url_ont in "$CLONE_URL_ODS_ONTOLOGY" "$CLONE_URL_OKH_ONTOLOGY"
+do
+	ont_dir_name="$(basename --suffix ".git" "$clone_url_ont")"
+	ont_dir="$ontologies_dir/$ont_dir_name"
+	repo_ensure_latest "$ont_dir" "$clone_url_ont"
+done
+ontology_ttls_root="$ontologies_dir"
 
 if [ -z "$data_url" ]
 then
