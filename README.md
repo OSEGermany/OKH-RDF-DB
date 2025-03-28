@@ -36,8 +36,8 @@ use that or go more into details like this:
 
 ```bash
 # Gets this project onto your computer.
-git clone "https://github.com/osegermany/OKH-RDF-DB.git" "OKH-DB-tester"
-cd "OKH-DB-tester"
+git clone "https://github.com/osegermany/OKH-RDF-DB.git"
+cd "OKH-RDF-DB"
 
 # Creates the DB and fills it with the data
 # (See the output for instructions
