@@ -9,8 +9,8 @@ PREFIX okh: <http://w3id.org/oseg/ont/okh#>
 PREFIX okhkrawl: <http://w3id.org/oseg/ont/okhkrawl#>
 PREFIX void: <http://rdfs.org/ns/void#>
 
-# All Projects with manualy created manifests
-# HACK Note that we ask for _**generated** manifests_. That is due to an error in the krawler, having swaped manifest and generated-manifests.
+# All Projects with manually created manifests
+# HACK Note that we ask for _**generated** manifests_. That is due to an error in the krawler, having swapped manifest and generated-manifests.
 SELECT ?ds ?src ?proj ?name ?license
 WHERE {
   ?ds a ods:Dataset ;
