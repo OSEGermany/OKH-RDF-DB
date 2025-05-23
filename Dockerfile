@@ -9,7 +9,6 @@ FROM bitnami/java:21-debian-12
 
 RUN install_packages jq
 
-RUN mkdir -p /srv/rdf
 WORKDIR /srv/rdf
 
 RUN install_packages \
