@@ -7,13 +7,12 @@
 
 FROM bitnami/java:21-debian-12
 
-RUN install_packages jq
-
 WORKDIR /srv/rdf
 
 RUN install_packages \
     ca-certificates \
     git \
+    jq \
     pv \
     unzip \
     wget
