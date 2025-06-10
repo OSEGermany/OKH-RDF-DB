@@ -17,8 +17,8 @@ RUN install_packages \
     unzip \
     wget
 
-COPY res ./res
-COPY run ./run
+COPY run/_common ./run/
+COPY run/install ./run/
 RUN run/install
 
 ENV DATA_DIR="/data"
@@ -26,6 +26,9 @@ ENV DB_BASE_DIR="/db"
 
 RUN mkdir -p "$DATA_DIR"
 RUN mkdir -p "$DB_BASE_DIR"
+
+COPY res ./res
+COPY run ./run
 
 RUN run/fill-db --samples
 
