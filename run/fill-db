@@ -227,7 +227,7 @@ find \
 find \
 	"$ontology_xmls_root" \
 	-name "*.xml" \
-	> "$input_list_file"
+	>> "$input_list_file"
 num_inputs="$(cat "$input_list_file" | wc -l)"
 echo "# input files: $num_inputs"
 
