@@ -28,6 +28,7 @@ CLONE_URL_SAMPLE_DATA="https://gitlab.opensourceecology.de/verein/projekte/okh/d
 CLONE_URL_SPDX_LICENSES="https://github.com/spdx/license-list-data.git"
 data_url="$CLONE_URL_OLD_DATA"
 data_branch="main"
+debug_loading=false
 cleanup=false
 online=true
 batch_size="$BATCH_SIZE_DEFAULT"
@@ -44,6 +45,9 @@ function print_help() {
 	echo "Options:"
 	echo "  -h, --help"
 	echo "    Print this usage help and exit"
+	echo "  --debug-loading"
+	echo "    Instead of a nice progress bar when loading the data into the DB,"
+	echo "    this shows the raw output."
 	echo "  --validate"
 	echo "    Validate the RDF input files before loading them into the DB"
 	echo "    (output: '$validation_output_file')"
@@ -85,6 +89,9 @@ do
 		-h|--help)
 			print_help
 			exit 0
+			;;
+		--debug-loading)
+			debug_loading=true
 			;;
 		--validate)
 			validate=true
@@ -281,14 +288,25 @@ mkdir -p "$db_tmp_dir"
 
 echo
 echo "Loading data into the DB in batches of size $batch_size ..."
-time while mapfile -t -n "$batch_size" batch && ((${#batch[@]}))
-do
-	"$jena_db_data_injector" \
-		--loc "$db_tmp_dir" \
-		"${batch[@]}"
-#		--loader=parallel \
-done < "$input_list_file" 2>&1 \
-	| pv -pet --line-mode --size "$num_inputs" > /dev/null
+if $debug_loading
+then
+	time while mapfile -t -n "$batch_size" batch && ((${#batch[@]}))
+	do
+		"$jena_db_data_injector" \
+			--loc "$db_tmp_dir" \
+			"${batch[@]}"
+	#		--loader=parallel \
+	done < "$input_list_file"
+else
+	time while mapfile -t -n "$batch_size" batch && ((${#batch[@]}))
+	do
+		"$jena_db_data_injector" \
+			--loc "$db_tmp_dir" \
+			"${batch[@]}"
+	#		--loader=parallel \
+	done < "$input_list_file" 2>&1 \
+		| pv -pet --line-mode --size "$num_inputs" > /dev/null
+fi
 echo
 if [ -e "$db_dir" ]
 then
