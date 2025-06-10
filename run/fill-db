@@ -25,8 +25,7 @@ CLONE_URL_ODS_ONTOLOGY="https://codeberg.org/elevont/open-dataset.git"
 CLONE_URL_OLD_DATA="https://gitlab.opensourceecology.de/verein/projekte/okh/data.git"
 CLONE_URL_EXP_DATA="git@github.com:OSEGermany/OKH-data-experimental.git"
 CLONE_URL_SAMPLE_DATA="https://gitlab.opensourceecology.de/verein/projekte/okh/data-sample.git"
-#CLONE_URL_SPDX_LICENSES="https://github.com/spdx/license-list-data.git"
-CLONE_URL_SPDX_LICENSES_XML="https://github.com/spdx/license-list-XML.git"
+CLONE_URL_SPDX_LICENSES="https://github.com/spdx/license-list-data.git"
 data_url="$CLONE_URL_OLD_DATA"
 data_branch="main"
 cleanup=false
@@ -156,15 +155,32 @@ echo
 echo "Get/Update input RDF ..."
 
 ontologies_dir="$HOME/.local/cache/onts"
-for clone_url_ont in "$CLONE_URL_ODS_ONTOLOGY" "$CLONE_URL_OKH_ONTOLOGY" "$CLONE_URL_SPDX_LICENSES_XML"
+for clone_url_ont in "$CLONE_URL_ODS_ONTOLOGY" "$CLONE_URL_OKH_ONTOLOGY"
 do
 	ont_dir_name="$(basename --suffix ".git" "$clone_url_ont")"
 	ont_dir="$ontologies_dir/$ont_dir_name"
 	repo_ensure_latest "$ont_dir" "$clone_url_ont" "master" \
 		|| repo_ensure_latest "$ont_dir" "$clone_url_ont" "main"
 done
+
+spdx_licenses_dir="$ontologies_dir/spdx-$(basename --suffix ".git" "$CLONE_URL_SPDX_LICENSES")"
+if ! [ -e "$spdx_licenses_dir" ]
+then
+	# This only fetches the objects for the latest commit. -> GoooooD
+	git clone --no-checkout --filter=blob:none "$CLONE_URL_SPDX_LICENSES" "$spdx_licenses_dir"
+
+	# This fetches all objects. -> BAD!
+# 	mkdir -p "$spdx_licenses_dir"
+# 	git -C "$spdx_licenses_dir" init
+# 	git -C "$spdx_licenses_dir" remote add -f origin "$CLONE_URL_SPDX_LICENSES"
+
+	git -C "$spdx_licenses_dir" config core.sparseCheckout true
+	echo "rdfturtle/" >> "$spdx_licenses_dir/.git/info/sparse-checkout"
+	git -C "$spdx_licenses_dir" checkout main
+fi
+git -C "$spdx_licenses_dir" pull --depth 1
+
 ontology_ttls_root="$ontologies_dir"
-ontology_xmls_root="$ontologies_dir/license-list-XML/src"
 
 if [ -z "$data_url" ]
 then
@@ -214,7 +230,6 @@ echo
 echo "Setting up the DB in '$db_dir' (temp dir: '$db_tmp_dir') ..."
 echo "    loading from '$ontology_ttls_root'"
 echo "    loading from '$data_ttls_root'"
-echo "    loading (XML) from '$ontology_xmls_root'"
 
 input_list_file="/tmp/inputs_$RANDOM.csv"
 echo
@@ -224,10 +239,6 @@ find \
 	"$data_ttls_root" \
 	-name "*.ttl" \
 	> "$input_list_file"
-find \
-	"$ontology_xmls_root" \
-	-name "*.xml" \
-	>> "$input_list_file"
 num_inputs="$(cat "$input_list_file" | wc -l)"
 echo "# input files: $num_inputs"
 
