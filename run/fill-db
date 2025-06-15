@@ -185,7 +185,7 @@ then
 	echo "rdfturtle/" >> "$spdx_licenses_dir/.git/info/sparse-checkout"
 	git -C "$spdx_licenses_dir" checkout main
 fi
-git -C "$spdx_licenses_dir" pull --depth 1
+git -C "$spdx_licenses_dir" pull --depth 1 --rebase --force
 
 ontology_ttls_root="$ontologies_dir"
 
