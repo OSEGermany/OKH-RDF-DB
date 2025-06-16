@@ -35,6 +35,7 @@ batch_size="$BATCH_SIZE_DEFAULT"
 validate=false
 validate_only=false
 validation_output_file="$build_dir/ttl_validation_errors.txt"
+data_glob="*.ttl"
 
 function print_help() {
 
@@ -58,6 +59,9 @@ function print_help() {
 	echo "    The number of Turtle fiels to load into the DB at once [default: $BATCH_SIZE_DEFAULT]"
 	echo "  --offline"
 	echo "    Do not try to fetch git repos"
+	echo "  --combined-only"
+	echo "    Do not load all TTL fiels, only ones that have the string 'combined'"
+	echo "    in their file-name"
 	echo "  --experimental"
 	echo "    Uses the new experimental data source."
 	echo "    NOTE: This data is private, so you need to get access first"
@@ -106,6 +110,9 @@ do
 			;;
 		-o|--offline)
 			online=false
+			;;
+		--combined-only)
+			data_glob="*combined*.ttl"
 			;;
 		--experimental)
 			data_url="$CLONE_URL_EXP_DATA"
@@ -255,9 +262,12 @@ echo
 echo "Assembling the list of RDF source files ..."
 find \
 	"$ontology_ttls_root" \
-	"$data_ttls_root" \
 	-name "*.ttl" \
 	> "$input_list_file"
+find \
+	"$data_ttls_root" \
+	-name "$data_glob" \
+	>> "$input_list_file"
 num_inputs="$(cat "$input_list_file" | wc -l)"
 echo "# input files: $num_inputs"
 
