@@ -155,6 +155,18 @@ function repo_ensure_latest() {
 	fi
 }
 
+function compact_db() {
+	echo "Compacting the DB ..."
+	"$jena_db_data_compactor" \
+		--loc "$db_tmp_dir"
+	# Remove old data dir(s)
+	find "$db_tmp_dir" -maxdepth 1 -name "Data-*" \
+		| sort \
+		| head -n -1 \
+		| xargs rm -Rf
+	echo "Compacting the DB - done."
+}
+
 ensure_java_version
 ensure_tool "$JENA_HOME" "$JENA_DL_URL" "Apache Jena"
 
@@ -288,6 +300,7 @@ mkdir -p "$db_tmp_dir"
 
 echo
 echo "Loading data into the DB in batches of size $batch_size ..."
+batch_idx=1
 if $debug_loading
 then
 	time while mapfile -t -n "$batch_size" batch && ((${#batch[@]}))
@@ -296,6 +309,11 @@ then
 			--loc "$db_tmp_dir" \
 			"${batch[@]}"
 	#		--loader=parallel \
+		if [ $((batch_idx % 20)) -eq 0 ]
+		then
+			compact_db
+		fi
+		batch_idx=$((batch_idx + 1))
 	done < "$input_list_file"
 else
 	time while mapfile -t -n "$batch_size" batch && ((${#batch[@]}))
@@ -304,9 +322,15 @@ else
 			--loc "$db_tmp_dir" \
 			"${batch[@]}"
 	#		--loader=parallel \
+		if [ $((batch_idx % 20)) -eq 0 ]
+		then
+			compact_db
+		fi
+		batch_idx=$((batch_idx + 1))
 	done < "$input_list_file" 2>&1 \
 		| pv -pet --line-mode --size "$num_inputs" > /dev/null
 fi
+compact_db
 echo
 if [ -e "$db_dir" ]
 then

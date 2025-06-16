@@ -39,6 +39,7 @@ JENA_FUSEKI_HOME="$HOME/.local/opt/apache-jena-fuseki-$JENA_VERSION"
 
 jena_db_data_validator="$JENA_HOME/bin/riot"
 jena_db_data_injector="$JENA_HOME/bin/tdb2.tdbloader"
+jena_db_data_compactor="$JENA_HOME/bin/tdb2.tdbcompact"
 jena_db_data_querier="$JENA_HOME/bin/tdb2.tdbquery"
 jena_fuseki_server="$JENA_FUSEKI_HOME/fuseki-server"
 
