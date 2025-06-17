@@ -36,6 +36,7 @@ validate=false
 validate_only=false
 validation_output_file="$build_dir/ttl_validation_errors.txt"
 data_glob="*.ttl"
+fraction_tv_proj="-1"
 compact=true
 
 function print_help() {
@@ -66,6 +67,8 @@ function print_help() {
 	echo "    in their file-name"
 	echo "  --skip-compacting"
 	echo "    Do not compact the DB after loading 100k projects"
+	echo "  --thingiverse-fraction <FRACTION>"
+	echo "    Do not load all the date from Thingiverse.com, but only the newest part"
 	echo "  --experimental"
 	echo "    Uses the new experimental data source."
 	echo "    NOTE: This data is private, so you need to get access first"
@@ -84,6 +87,7 @@ function print_help() {
 	echo "  $script_name --local-data /data --batch-size 1000"
 	echo "  $script_name --samples"
 	echo "  $script_name --validate --samples"
+	echo "  $script_name --local-data /data --thingiverse-fraction 0.2"
 }
 
 # read command-line args
@@ -120,6 +124,10 @@ do
 			;;
 		--skip-compacting)
 			compact=false
+			;;
+		--thingiverse-fraction)
+			fraction_tv_proj="$1"
+			shift
 			;;
 		--experimental)
 			data_url="$CLONE_URL_EXP_DATA"
@@ -267,18 +275,42 @@ echo "Setting up the DB in '$db_dir' (temp dir: '$db_tmp_dir') ..."
 echo "    loading from '$ontology_ttls_root'"
 echo "    loading from '$data_ttls_root'"
 
-input_list_file="/tmp/inputs_$RANDOM.csv"
+input_list_file_base="/tmp/inputs_$RANDOM"
+input_list_file="$input_list_file_base.csv"
+input_list_file_tv="${input_list_file_base}_thingiverse.csv"
 echo
 echo "Assembling the list of RDF source files ..."
 find \
 	"$ontology_ttls_root" \
 	-name "*.ttl" \
 	> "$input_list_file"
-find \
-	"$data_ttls_root" \
-	-name "$data_glob" \
-	>> "$input_list_file"
-num_inputs="$(cat "$input_list_file" | wc -l)"
+if [ "$fraction_tv_proj" != "-1" ]
+then
+	find \
+		"$data_ttls_root" \
+		-name "$data_glob" \
+		| grep -v thingiverse.com \
+		>> "$input_list_file"
+	find \
+		"$data_ttls_root" \
+		-name "$data_glob" \
+		| grep thingiverse.com \
+		| sort \
+		>> "$input_list_file_tv"
+	num_inputs_tv="$(wc -l < "$input_list_file_tv")"
+	echo "Thingiverse.com projects total: $num_inputs_tv"
+	num_tv_projs=$(echo "$num_inputs_tv" | awk '{printf("%d\n", ('"$fraction_tv_proj"' * $1) + 0.5)}')
+	echo "Thingiverse.com projects selected: $num_tv_projs"
+	tail -n "-$num_tv_projs" \
+		< "$input_list_file_tv" \
+		>> "$input_list_file"
+else
+	find \
+		"$data_ttls_root" \
+		-name "$data_glob" \
+		>> "$input_list_file"
+fi
+num_inputs="$(wc -l < "$input_list_file")"
 echo "# input files: $num_inputs"
 
 if $validate
