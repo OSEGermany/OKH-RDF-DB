@@ -36,6 +36,7 @@ validate=false
 validate_only=false
 validation_output_file="$build_dir/ttl_validation_errors.txt"
 data_glob="*.ttl"
+compact=true
 
 function print_help() {
 
@@ -62,6 +63,8 @@ function print_help() {
 	echo "  --combined-only"
 	echo "    Do not load all TTL fiels, only ones that have the string 'combined'"
 	echo "    in their file-name"
+	echo "  --skip-compacting"
+	echo "    Do not compact the DB after loading 100k projects"
 	echo "  --experimental"
 	echo "    Uses the new experimental data source."
 	echo "    NOTE: This data is private, so you need to get access first"
@@ -114,6 +117,9 @@ do
 		--combined-only)
 			data_glob="*combined*.ttl"
 			;;
+		--skip-compacting)
+			compact=false
+			;;
 		--experimental)
 			data_url="$CLONE_URL_EXP_DATA"
 			;;
@@ -163,15 +169,18 @@ function repo_ensure_latest() {
 }
 
 function compact_db() {
-	echo "Compacting the DB ..."
-	"$jena_db_data_compactor" \
-		--loc "$db_tmp_dir"
-	# Remove old data dir(s)
-	find "$db_tmp_dir" -maxdepth 1 -name "Data-*" \
-		| sort \
-		| head -n -1 \
-		| xargs rm -Rf
-	echo "Compacting the DB - done."
+	if $compact
+	then
+		echo "Compacting the DB ..."
+		"$jena_db_data_compactor" \
+			--loc "$db_tmp_dir"
+		# Remove old data dir(s)
+		find "$db_tmp_dir" -maxdepth 1 -name "Data-*" \
+			| sort \
+			| head -n -1 \
+			| xargs rm -Rf
+		echo "Compacting the DB - done."
+	fi
 }
 
 ensure_java_version
