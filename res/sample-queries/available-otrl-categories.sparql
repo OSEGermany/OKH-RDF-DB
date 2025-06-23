@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: 2025 Robin Vobruba <hoijui.quaero@gmail.com>
+#
+# SPDX-License-Identifier: Unlicense
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX otrl: <http://w3id.org/oseg/ont/otrl#>
+
+# Fetch OTRL values
+SELECT DISTINCT
+  ?iri
+  ?label
+  ?comment
+  ?goal
+  ?exitCriteria
+WHERE {
+  ?iri
+    a otrl:OTRL ;
+    rdfs:label ?label ;
+    rdfs:comment ?comment ;
+    otrl:goal ?goal ;
+    otrl:exitCriteria ?exitCriteria ;
+  .
+}
