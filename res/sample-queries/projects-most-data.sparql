@@ -7,19 +7,30 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ods: <http://w3id.org/oseg/ont/ods#>
 PREFIX okh: <http://w3id.org/oseg/ont/okh#>
 PREFIX okhkrawl: <http://w3id.org/oseg/ont/okhkrawl#>
+PREFIX otrl: <http://w3id.org/oseg/ont/otrl#>
 PREFIX schema: <https://schema.org/>
+PREFIX spdx: <http://spdx.org/rdf/terms#>
+PREFIX text: <http://jena.apache.org/text#>
 PREFIX tsdc: <https://w3id.org/oseg/ont/tsdc/core#>
 PREFIX void: <http://rdfs.org/ns/void#>
 
-# All projects, including most of their properties
+# All projects, including most of their properties.
 # Something along these lines would be used when viewing the detail-view
 # of a project on a web-UI, for example.
-SELECT
+#
+# If you enable the filter in the end,
+# this fetches only projects that have "loom" in their name.
+# Returns the first 10 finds only.
+SELECT DISTINCT
   ?name
   ?src_license
+  ?src_license_name
+  ?src_license_osi
   ?src_licensor
   ?src_url
   ?proj_license
+  ?proj_license_name
+  ?proj_license_osi
   ?proj_licensor
   ?proj_function
   ?proj_documentation_language
@@ -27,7 +38,13 @@ SELECT
   ?proj_organization
   ?proj_readme
   ?proj_technology_readiness_level
+  ?proj_technology_readiness_level_label
+  ?proj_technology_readiness_level_comment
+  ?proj_technology_readiness_level_goal
   ?proj_documentation_readiness_level
+  ?proj_documentation_readiness_level_label
+  ?proj_documentation_readiness_level_comment
+  ?proj_documentation_readiness_level_goal
   ?proj_attestation
   ?proj_doi
   ?proj_std
@@ -40,11 +57,13 @@ SELECT
   ?proj_outer_dimensions_width
   ?proj_outer_dimensions_height
   ?proj_outer_dimensions_depth
-  ?proj_img_slot
-  ?proj_img_tag
-  ?proj_img_caption
   ?proj_img_url
+#  ?proj_img_slot
+#  ?proj_img_tag
+#  ?proj_img_caption
   ?proj_release_url
+  ?proj_normalized_manifest
+  ?proj_source_url
 WHERE {
   ?ds
     a ods:Dataset ;
@@ -54,8 +73,30 @@ WHERE {
   ?src
     ods:license ?src_license ;
     ods:licensor ?src_licensor ;
-    ods:dataSourcingProcedure okhkrawl:dataSourcingProcedureGeneratedManifest ;
+    ods:dataSourcingProcedure ?src_ds_sourcing_procedure ;
     .
+
+  { ?src ods:primaryHost okhkrawl:dataProviderAppropedia }
+  UNION
+  { ?src ods:primaryHost okhkrawl:dataProviderCodeberg }
+  UNION
+  { ?src ods:primaryHost okhkrawl:dataProviderGithub }
+  UNION
+  { ?src ods:primaryHost okhkrawl:dataProviderGitlab }
+  UNION
+  { ?src ods:primaryHost okhkrawl:dataProviderGitlabOpenSourceEcologyGermany }
+  UNION
+  { ?src ods:primaryHost okhkrawl:dataProviderOshwa }
+# NOTE We comment this out to excldue Thingiverse
+#  UNION
+#  { ?src ods:primaryHost okhkrawl:dataProviderThingiverse }
+
+  OPTIONAL {
+    ?src_license
+      spdx:name ?src_license_name ;
+      spdx:isOsiApproved ?src_license_osi ;
+      .
+  }
   OPTIONAL { ?src ods:source ?src_url . }
   ?proj
     okh:name ?name ;
@@ -63,12 +104,32 @@ WHERE {
     ods:licensor ?proj_licensor ;
     okh:function ?proj_function ;
   .
+  OPTIONAL {
+    ?proj_license
+      spdx:name ?proj_license_name ;
+      spdx:isOsiApproved ?proj_license_osi ;
+      .
+  }
   OPTIONAL { ?proj okh:documentationLanguage ?proj_documentation_language . }
   OPTIONAL { ?proj okh:version ?proj_version . }
   OPTIONAL { ?proj okh:organization ?proj_organization . }
   OPTIONAL { ?proj okh:readme ?proj_readme . }
-  OPTIONAL { ?proj okh:technologyReadinessLevel ?proj_technology_readiness_level . }
-  OPTIONAL { ?proj okh:documentationReadinessLevel ?proj_documentation_readiness_level . }
+  OPTIONAL {
+    ?proj okh:technologyReadinessLevel ?proj_technology_readiness_level .
+    ?proj_technology_readiness_level
+      rdfs:label ?proj_technology_readiness_level_label ;
+      rdfs:comment ?proj_technology_readiness_level_comment ;
+      otrl:goal ?proj_technology_readiness_level_goal ;
+      .
+  }
+  OPTIONAL {
+    ?proj okh:documentationReadinessLevel ?proj_documentation_readiness_level .
+    ?proj_documentation_readiness_level
+      rdfs:label ?proj_documentation_readiness_level_label ;
+      rdfs:comment ?proj_documentation_readiness_level_comment ;
+      otrl:goal ?proj_documentation_readiness_level_goal ;
+      .
+  }
   OPTIONAL { ?proj okh:attestation ?proj_attestation . }
   OPTIONAL { ?proj okh:hasPublication [ okh:doi ?proj_doi ] . }
   OPTIONAL { ?proj okh:compliesWith [ okh:standardID ?proj_std ] . }
@@ -84,11 +145,17 @@ WHERE {
       okh:depth ?proj_outer_dimensions_depth ;
     ] . }
   OPTIONAL { ?proj okh:hasImage [
-      okh:fillsSlot [ schema:termCode ?proj_img_slot ] ;
-      okh:hasTag [ schema:termCode ?proj_img_tag ] ;
-      okh:depicts ?proj_img_caption ;
       ods:url ?proj_img_url ;
+#      OPTIONAL { okh:fillsSlot [ schema:termCode ?proj_img_slot ] } ;
+#      OPTIONAL { okh:hasTag [ schema:termCode ?proj_img_tag ] } ;
+#      OPTIONAL { okh:depicts ?proj_img_caption } ;
     ] . }
   OPTIONAL { ?proj okh:release ?proj_release_url . }
+  OPTIONAL { ?proj okh:normalizedManifestContent ?proj_normalized_manifest . }
+  OPTIONAL { ?proj ods:source ?proj_source_url . }
+
+#  ?proj text:query (okh:name "loom") .
+#  FILTER regex(?name, "loom", "i")
+#  FILTER CONTAINS(?name, "loom")
 }
-LIMIT 100
+LIMIT 10
