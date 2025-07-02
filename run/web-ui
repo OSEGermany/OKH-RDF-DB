@@ -18,6 +18,7 @@ source "$script_dir/_common"
 APP_NAME="RDF DB Web UI"
 dataset_name="okh"
 port="3030"
+update_arg_opt=""
 
 function print_help() {
 
@@ -28,6 +29,8 @@ function print_help() {
 	echo "Options:"
 	echo "  -h, --help"
 	echo "    Print this usage help and exit"
+	echo "  -u, --update"
+	echo "    Allow updates (via SPARQL Update and SPARQL HTTP Update)"
 	echo "  -p, --port PORT"
 	echo "    Run the web service on a different port (default: $port)"
 	echo "Examples:"
@@ -47,6 +50,9 @@ do
 		-h|--help)
 			print_help
 			exit 0
+			;;
+		-u|--update)
+			update_arg_opt="--update"
 			;;
 		-p|--port)
 			port="$1"
@@ -74,7 +80,7 @@ echo "Or query it with SPARQL on: $query_url"
 echo
 cd "$db_dir"
 "$jena_fuseki_server" \
-	--update \
+	$update_arg_opt \
 	--tdb2 \
 	--loc "$db_dir" \
 	--port "$port" \
