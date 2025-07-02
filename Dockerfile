@@ -30,7 +30,7 @@ RUN mkdir -p "$DB_BASE_DIR"
 COPY res ./res
 COPY run ./run
 
-RUN run/fill-db --samples
+RUN run/fill-db --debug-loading --skip-compacting --samples
 
 # NOTE Labels and annotations are added by CI (outside this Dockerfile);
 #      see `.github/workflows/docker.yml`.
