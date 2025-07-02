@@ -22,21 +22,21 @@ PREFIX void: <http://rdfs.org/ns/void#>
 # this fetches only projects that have "loom" in their name.
 # Returns the first 10 finds only.
 SELECT DISTINCT
-  ?name
+  ?proj_name
   ?src_license
   ?src_license_name
   ?src_license_osi
-  ?src_licensor
+  ( GROUP_CONCAT( DISTINCT STR(?src_licensor); separator=',' ) as ?src_licensor_list )
   ?src_url
   ?proj_license
   ?proj_license_name
   ?proj_license_osi
-  ?proj_licensor
+  ( GROUP_CONCAT( DISTINCT STR(?proj_licensor); separator=',' ) as ?proj_licensor_list )
   ?proj_function
-  ?proj_documentation_language
+  ( GROUP_CONCAT( DISTINCT STR(?proj_documentation_language); separator=',' ) as ?proj_documentation_language_list )
   ?proj_version
-  ?proj_organization
-  ?proj_readme
+  ( GROUP_CONCAT( DISTINCT STR(?proj_organization); separator=',' ) as ?proj_organization_list )
+  ( GROUP_CONCAT( DISTINCT STR(?proj_readme); separator=',' ) as ?proj_readme_list )
   ?proj_technology_readiness_level
   ?proj_technology_readiness_level_label
   ?proj_technology_readiness_level_comment
@@ -45,19 +45,19 @@ SELECT DISTINCT
   ?proj_documentation_readiness_level_label
   ?proj_documentation_readiness_level_comment
   ?proj_documentation_readiness_level_goal
-  ?proj_attestation
+  ( GROUP_CONCAT( DISTINCT STR(?proj_attestation); separator=',' ) as ?proj_attestation_list )
   ?proj_doi
-  ?proj_std
-  ?proj_cpc
-  ?proj_tsdc_id
-  ?proj_bom_url
-  ?proj_manufacturing_instructions
-  ?proj_user_manual
+  ( GROUP_CONCAT( DISTINCT STR(?proj_std); separator=',' ) as ?proj_std_list )
+  ( GROUP_CONCAT( DISTINCT STR(?proj_cpc); separator=',' ) as ?proj_cpc_list )
+  ( GROUP_CONCAT( DISTINCT STR(?proj_tsdc_id); separator=',' ) as ?proj_tsdc_id_list )
+  ( GROUP_CONCAT( DISTINCT STR(?proj_bom_url); separator=',' ) as ?proj_bom_url_list )
+  ( GROUP_CONCAT( DISTINCT STR(?proj_manufacturing_instructions); separator=',' ) as ?proj_manufacturing_instructions_list )
+  ( GROUP_CONCAT( DISTINCT STR(?proj_user_manual); separator=',' ) as ?proj_user_manual_list )
   ?proj_mass
   ?proj_outer_dimensions_width
   ?proj_outer_dimensions_height
   ?proj_outer_dimensions_depth
-  ?proj_img_url
+  ( GROUP_CONCAT( DISTINCT STR(?proj_img_url); separator=',' ) as ?proj_img_url_list )
 #  ?proj_img_slot
 #  ?proj_img_tag
 #  ?proj_img_caption
@@ -99,7 +99,7 @@ WHERE {
   }
   OPTIONAL { ?src ods:source ?src_url . }
   ?proj
-    okh:name ?name ;
+    okh:name ?proj_name ;
     ods:license ?proj_license ;
     ods:licensor ?proj_licensor ;
     okh:function ?proj_function ;
@@ -158,4 +158,35 @@ WHERE {
 #  FILTER regex(?name, "loom", "i")
 #  FILTER CONTAINS(?name, "loom")
 }
+GROUP BY
+  ?proj_name
+  ?src_license
+  ?src_license_name
+  ?src_license_osi
+  ?src_url
+  ?proj_license
+  ?proj_license_name
+  ?proj_license_osi
+  ?proj_function
+  ?proj_version
+  ?proj_technology_readiness_level
+  ?proj_technology_readiness_level_label
+  ?proj_technology_readiness_level_comment
+  ?proj_technology_readiness_level_goal
+  ?proj_documentation_readiness_level
+  ?proj_documentation_readiness_level_label
+  ?proj_documentation_readiness_level_comment
+  ?proj_documentation_readiness_level_goal
+  ?proj_doi
+  ?proj_mass
+  ?proj_outer_dimensions_width
+  ?proj_outer_dimensions_height
+  ?proj_outer_dimensions_depth
+#  ?proj_img_slot
+#  ?proj_img_tag
+#  ?proj_img_caption
+  ?proj_release_url
+  ?proj_normalized_manifest
+  ?proj_source_url
+ORDER BY ?ds
 LIMIT 10
